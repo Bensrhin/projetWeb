@@ -1,3 +1,7 @@
-connexion/add_utilisateur.class
-connexion/Inscription.class
-connexion/checkuser.class
+dao/AbstractDataBaseDAO.class
+dao/DAOException.class
+dao/UtilisateurDao.class
+beans/Utilisateur.class
+servlets/Inscription.class
+forms/InscriptionForm.class
+dao/DAOConfigurationException.class
