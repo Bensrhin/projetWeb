@@ -58,18 +58,19 @@ public class InscriptionForm {
         utilisateur.setMotDePasse( motDePasse );
 
         try {
-            validationNom( nom );
+            validationNom( nom ,userDao);
         } catch ( Exception e ) {
             setErreur( CHAMP_NOM, e.getMessage() );
         }
         utilisateur.setNom( nom );
 
         if ( erreurs.isEmpty() ) {
+            userDao.creerUtilisateur(nom, motDePasse, email);
             resultat = "Succès de l'inscription.";
         } else {
             resultat = "Échec de l'inscription.";
         }
-        userDao.creerUtilisateur(nom, motDePasse, email);
+        
         return utilisateur;
     }
     
@@ -95,10 +96,13 @@ public class InscriptionForm {
         }
     }
 
-    private void validationNom( String nom ) throws Exception {
+    private void validationNom( String nom ,UtilisateurDao userDao) throws Exception {
+        if (userDao.verifyPseudonyme(nom)){
+            throw new Exception( "Ce pseudonyme est utilisé par un autre utilisateur , veuillez saisir un nouveau" );
+        }
         if (nom == null){
             throw new Exception( "Merci de saisir un pseudonyme" );
-        } else if (nom.length() < 6 ) {
+        } else if (nom.length() < 3 ) {
             throw new Exception( "Le pseudonyme doit contenir au moins 6 caractères." );
         }
     }

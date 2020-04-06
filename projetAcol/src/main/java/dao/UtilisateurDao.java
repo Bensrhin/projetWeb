@@ -36,8 +36,27 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         }
     }
     
-    public void verifyPseudonyme(String pseudonyme){
-        
+    /**
+     * Chercher dans la base de donnée si il y a un utilisateur avec 
+     * le même pseudonyme
+     * @param pseudonyme 
+     */
+    public boolean verifyPseudonyme(String pseudonyme){
+        try (
+                Connection conn = getConn();
+                PreparedStatement st = conn.prepareStatement
+                ("select idUser,pseudonyme from Utilisateur where pseudonyme=? ");
+            ){
+            st.setString(1,pseudonyme);
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e){
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
     }
     
 }
