@@ -2,6 +2,8 @@
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/forms/InscriptionForm.java
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/dao/DAOConfigurationException.java
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/dao/UtilisateurDao.java
+/home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/forms/ConnexionForm.java
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/dao/AbstractDataBaseDAO.java
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/servlets/Inscription.java
+/home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/servlets/Connexion.java
 /home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java/dao/DAOException.java

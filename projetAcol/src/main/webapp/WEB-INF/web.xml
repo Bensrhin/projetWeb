@@ -10,7 +10,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-   <welcome-file>inscription</welcome-file>
+   <welcome-file>connexion</welcome-file>
     </welcome-file-list>
     <servlet>
 		<servlet-name>Inscription</servlet-name>

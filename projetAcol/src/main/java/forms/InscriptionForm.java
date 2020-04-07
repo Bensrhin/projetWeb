@@ -9,11 +9,14 @@ package forms;
  *
  * @author amalou
  */
+
 import java.util.HashMap;
 import java.util.Map;
 import dao.UtilisateurDao;
 import javax.servlet.http.HttpServletRequest;
 import beans.Utilisateur;
+
+
 public class InscriptionForm {
     
     private static final String CHAMP_EMAIL  = "email";
@@ -22,6 +25,7 @@ public class InscriptionForm {
     private static final String CHAMP_NOM    = "nom";
     private String resultat;
     private Map<String, String> erreurs  = new HashMap<String, String>();
+    private static final String ALGO_CHIFFREMENT = "SHA-256";
 
     
     public String getResultat() {
@@ -43,7 +47,7 @@ public class InscriptionForm {
         Utilisateur utilisateur = new Utilisateur();
 
         try {
-            validationEmail( email );
+            validationEmail( email ,userDao);
         } catch ( Exception e ) {
             setErreur( CHAMP_EMAIL, e.getMessage() );
         }
@@ -51,10 +55,17 @@ public class InscriptionForm {
 
         try {
             validationMotsDePasse( motDePasse, confirmation );
+            
         } catch ( Exception e ) {
             setErreur( CHAMP_PASS, e.getMessage() );
             setErreur( CHAMP_CONF, null );
         }
+        /**
+        ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
+        passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
+        passwordEncryptor.setPlainDigest( false );
+        String motDePasseChiffre = passwordEncryptor.encryptPassword( motDePasse );
+        * */
         utilisateur.setMotDePasse( motDePasse );
 
         try {
@@ -74,8 +85,11 @@ public class InscriptionForm {
         return utilisateur;
     }
     
-    private void validationEmail( String email ) throws Exception {
-        if ( email != null ) {
+    private void validationEmail( String email ,UtilisateurDao userDao) throws Exception {
+        // TODO unicité d'email
+        if (userDao.verifyUniqueEmail(email)){
+             throw new Exception("Cet email est utilisé par un autre utilisateur");
+        } else if ( email != null ) {
             if ( !email.matches( "([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)" ) ) {
                 throw new Exception( "Merci de saisir une adresse mail valide." );
             }
@@ -95,7 +109,8 @@ public class InscriptionForm {
             throw new Exception( "Merci de saisir et confirmer votre mot de passe." );
         }
     }
-
+    
+    
     private void validationNom( String nom ,UtilisateurDao userDao) throws Exception {
         if (userDao.verifyPseudonyme(nom)){
             throw new Exception( "Ce pseudonyme est utilisé par un autre utilisateur , veuillez saisir un nouveau" );

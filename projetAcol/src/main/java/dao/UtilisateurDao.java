@@ -59,4 +59,51 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         }
     }
     
+    public boolean verifyUniqueEmail(String email){
+        try (
+                Connection conn = getConn();
+                PreparedStatement st = conn.prepareStatement
+                ("select idUser,email from Utilisateur where email=? ");
+            ){
+            st.setString(1,email);
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e){
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
+    
+    public boolean connexion(Utilisateur user){
+        String pseudonyme = user.getNom();
+        String motDePasse = user.getMotDePasse();
+        
+        
+        try (
+                Connection conn = getConn();
+                PreparedStatement st = conn.prepareStatement
+                ("select idUser,pseudonyme,password from Utilisateur where pseudonyme=? ");
+            ){
+                st.setString(1,pseudonyme);
+                ResultSet resultSet = st.executeQuery();
+                if (resultSet.next()){
+                    String password = resultSet.getString(3);
+                    if (!password.equals(motDePasse)){
+                        return false;
+                    } else {
+                        user.setIdUser(resultSet.getInt(1));
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+        } catch (SQLException e){
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+    
 }

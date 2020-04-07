@@ -1,6 +1,8 @@
+forms/ConnexionForm.class
 dao/AbstractDataBaseDAO.class
 dao/DAOException.class
 dao/UtilisateurDao.class
+servlets/Connexion.class
 beans/Utilisateur.class
 servlets/Inscription.class
 forms/InscriptionForm.class
