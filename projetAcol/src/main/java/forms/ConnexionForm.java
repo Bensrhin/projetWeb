@@ -9,6 +9,7 @@ import java.util.Map;
 import dao.UtilisateurDao;
 import javax.servlet.http.HttpServletRequest;
 import beans.Utilisateur;
+
 /**
  *
  * @author amalou
@@ -18,7 +19,6 @@ public class ConnexionForm {
     private static final String CHAMP_NOM    = "nom";
     private static final String CHAMP_CONX  = "connexion";
     private static final String CHAMP_PASS   = "motdepasse";
-
 
     private String resultat;
     private Map<String, String> erreurs  = new HashMap<String, String>();
@@ -36,7 +36,9 @@ public class ConnexionForm {
 
         String pseudonyme = getValeurChamp( request, CHAMP_NOM );
         String motDePasse = getValeurChamp( request, CHAMP_PASS );
-
+        
+        /** Hashage de mot de passe **/
+        String hashPass = userDao.hashPassword(motDePasse);
         Utilisateur utilisateur = new Utilisateur();
 
         /* Validation du champ email. */
@@ -54,7 +56,7 @@ public class ConnexionForm {
             setErreur( CHAMP_PASS, e.getMessage() );
         }
         utilisateur.setNom( pseudonyme );
-        utilisateur.setMotDePasse( motDePasse );
+        utilisateur.setMotDePasse( hashPass );
 
         /* Initialisation du résultat global de la validation. */
         
@@ -67,7 +69,7 @@ public class ConnexionForm {
         if ( erreurs.isEmpty() ) {
             resultat = "Succès de la connexion.";
         } else {
-            resultat = "Échec de la connexion.";
+            resultat = "Échec de la connexion." + utilisateur.getMotDePasse();
         }
         return utilisateur;
     }
@@ -112,4 +114,6 @@ public class ConnexionForm {
             return valeur;
         }
     }
+    
+    
 }
