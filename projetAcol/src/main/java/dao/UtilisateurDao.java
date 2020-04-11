@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import beans.Utilisateur;
+import java.math.BigInteger;  
+import java.nio.charset.StandardCharsets; 
+import java.security.MessageDigest;  
+import java.security.NoSuchAlgorithmException;  
+
 
 public class UtilisateurDao extends AbstractDataBaseDAO{
     
@@ -104,6 +109,25 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         } catch (SQLException e){
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
+    }
+    
+    public String hashPassword(String password){
+        String generatedPass = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPass = sb.toString();
+         } catch (NoSuchAlgorithmException e) 
+            {
+                e.printStackTrace();
+            }
+        return generatedPass;
     }
     
 }

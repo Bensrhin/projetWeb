@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import beans.Utilisateur;
 
 
+
 public class InscriptionForm {
     
     private static final String CHAMP_EMAIL  = "email";
@@ -25,7 +26,7 @@ public class InscriptionForm {
     private static final String CHAMP_NOM    = "nom";
     private String resultat;
     private Map<String, String> erreurs  = new HashMap<String, String>();
-    private static final String ALGO_CHIFFREMENT = "SHA-256";
+   
 
     
     public String getResultat() {
@@ -60,13 +61,10 @@ public class InscriptionForm {
             setErreur( CHAMP_PASS, e.getMessage() );
             setErreur( CHAMP_CONF, null );
         }
-        /**
-        ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
-        passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
-        passwordEncryptor.setPlainDigest( false );
-        String motDePasseChiffre = passwordEncryptor.encryptPassword( motDePasse );
-        * */
-        utilisateur.setMotDePasse( motDePasse );
+        
+        String hashPass = userDao.hashPassword(motDePasse);
+        
+        utilisateur.setMotDePasse( hashPass );
 
         try {
             validationNom( nom ,userDao);
@@ -76,7 +74,7 @@ public class InscriptionForm {
         utilisateur.setNom( nom );
 
         if ( erreurs.isEmpty() ) {
-            userDao.creerUtilisateur(nom, motDePasse, email);
+            userDao.creerUtilisateur(nom, hashPass, email);
             resultat = "Succès de l'inscription.";
         } else {
             resultat = "Échec de l'inscription.";
