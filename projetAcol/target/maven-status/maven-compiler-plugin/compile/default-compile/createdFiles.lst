@@ -7,5 +7,5 @@ dao/UtilisateurDao.class
 servlets/Connexion.class
 beans/Utilisateur.class
 servlets/Inscription.class
-dao/DAOConfigurationException.class
 forms/InscriptionForm.class
+dao/DAOConfigurationException.class
