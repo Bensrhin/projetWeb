@@ -21,10 +21,7 @@ create table Utilisateur
 
 CREATE TABLE Partie (
     idPartie number(6) DEFAULT id_partie.nextval PRIMARY KEY,
-    nbrPart  integer  not null,
-    dureeJour float(10) not null,
-    dureeNuit float(10) not null,
-    heureDeb DATE not null,
+    maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
     propLoup float(10) not null
 );
