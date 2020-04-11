@@ -36,13 +36,13 @@ public class PartieForm {
     }
     
     
-    public Utilisateur configurerPartie( HttpServletRequest request , UtilisateurDao userDao) {
+    public Partie configurerPartie( HttpServletRequest request , UtilisateurDao userDao) {
         
 
-        double probabilite = getValeurChamp( request, CHAMP_PROBABILITE );
-        double loupgarou = getValeurChamp( request, CHAMP_LOUPGAROU );
+        double probabilite = getValeurChampProbabilite( request, CHAMP_PROBABILITE );
+        double loupgarou = getValeurChampLoupGarou( request, CHAMP_LOUPGAROU );
 
-       Partie partie = new Partie();
+        Partie partie = new Partie();
 
         try {
             validationProbabilite( probabilite );
@@ -51,18 +51,14 @@ public class PartieForm {
         }
         partie.setProbabilite( probabilite );
 
-        
-        
-        String hashPass = userDao.hashPassword(motDePasse);
-        
-        utilisateur.setMotDePasse( hashPass );
-
         try {
-            validationNom( nom ,userDao);
+            validationLoupGarou( loupgarou );
         } catch ( Exception e ) {
-            setErreur( CHAMP_NOM, e.getMessage() );
+            setErreur( CHAMP_LOUPGAROU, e.getMessage() );
         }
-        utilisateur.setNom( nom );
+        partie.setLoupGarou( loupgarou );
+
+        
 
         if ( erreurs.isEmpty() ) {
             userDao.creerUtilisateur(nom, hashPass, email);
@@ -71,7 +67,7 @@ public class PartieForm {
             resultat = "Échec de l'inscription.";
         }
         
-        return utilisateur;
+        return partie;
     }
     
     private void validationProbabilite( double probabilite) throws Exception {
@@ -98,7 +94,16 @@ public class PartieForm {
  * Méthode utilitaire qui retourne null si un champ est vide, et son contenu
  * sinon.
  */
-    private static double getValeurChamp( HttpServletRequest request, String nomChamp ) {
+    private static double getValeurChampLoupGarou( HttpServletRequest request, String nomChamp ) {
+        String valeur = request.getParameter( nomChamp );
+        if ( valeur == null ) {
+            return 0.33;
+        } else {
+            return Double.valueOf(valeur);
+        }
+    }
+    
+        private static double getValeurChampProbabilite( HttpServletRequest request, String nomChamp ) {
         String valeur = request.getParameter( nomChamp );
         if ( valeur == null ) {
             return 0;
@@ -106,5 +111,6 @@ public class PartieForm {
             return Double.valueOf(valeur);
         }
     }
+
 
 }
