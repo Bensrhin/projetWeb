@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author nadir
  */
 @WebServlet(name = "Configuration", urlPatterns = {"/Configuration"})
-public class Configuration extends HttpServlet {
+public class Partie extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

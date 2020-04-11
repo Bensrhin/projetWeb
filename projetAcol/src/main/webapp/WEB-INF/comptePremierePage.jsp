@@ -84,7 +84,7 @@
         <h2>Que voulez vous faire ? </h2>
         <br><br>
         <p align="center">
-            <a href="configuration" class="button">Nouvelle Partie</a>
+            <a href="partie" class="button">Nouvelle Partie</a>
             <a href="" class="button">Rejoindre une partie</a>
         </p>
     </body>
