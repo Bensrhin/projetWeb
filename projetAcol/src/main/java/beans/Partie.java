@@ -10,29 +10,42 @@ package beans;
  * @author amalou
  */
 public class Partie {
-    
+
     private long idPartie;
+    private String maitre;
+
     private double probabilite;
     private double probaLoupGarou;
 
-    public void setIdPartie(long id){
+    public void setIdPartie(long id) {
         this.idPartie = idPartie;
     }
+
     public void setProba(double proba) {
-	this.probabilite = probabilite;
-    }
-    public void setProbaLoupGarou(double loupGarou) {
-	this.probaLoupGarou = probaLoupGarou;
+        this.probabilite = probabilite;
     }
 
-    public long getIdPartie(){
+    public void setProbaLoupGarou(double loupGarou) {
+        this.probaLoupGarou = probaLoupGarou;
+    }
+
+    public long getIdPartie() {
         return this.idPartie;
     }
-    public double getProba(){
+
+    public double getProba() {
         return this.probaLoupGarou;
     }
-   
-    public double getProbaLoupGarou(){
+
+    public double getProbaLoupGarou() {
         return this.probaLoupGarou;
+    }
+
+    public String getMaitre() {
+        return maitre;
+    }
+
+    public void setMaitre(String maitre) {
+        this.maitre = maitre;
     }
 }

@@ -9,11 +9,13 @@ package forms;
  *
  * @author nadir
  */
+import beans.Partie;
 import java.util.HashMap;
 import java.util.Map;
 import dao.UtilisateurDao;
 import javax.servlet.http.HttpServletRequest;
 import beans.Utilisateur;
+import dao.PartieDao;
 
 
 
@@ -36,35 +38,37 @@ public class PartieForm {
     }
     
     
-    public Partie configurerPartie( HttpServletRequest request , UtilisateurDao userDao) {
+    public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao) {
         
-
+        String maitre = request.getParameter("maitre");
         double probabilite = getValeurChampProbabilite( request, CHAMP_PROBABILITE );
         double loupgarou = getValeurChampLoupGarou( request, CHAMP_LOUPGAROU );
 
         Partie partie = new Partie();
-
+        
+        partie.setMaitre( maitre );
+        
         try {
             validationProbabilite( probabilite );
         } catch ( Exception e ) {
             setErreur( CHAMP_PROBABILITE, e.getMessage() );
         }
-        partie.setProbabilite( probabilite );
+        partie.setProba( probabilite );
 
         try {
             validationLoupGarou( loupgarou );
         } catch ( Exception e ) {
             setErreur( CHAMP_LOUPGAROU, e.getMessage() );
         }
-        partie.setLoupGarou( loupgarou );
+        partie.setProbaLoupGarou( loupgarou );
 
         
 
         if ( erreurs.isEmpty() ) {
-            userDao.creerUtilisateur(nom, hashPass, email);
-            resultat = "Succès de l'inscription.";
+            partieDao.creerPartie(maitre, probabilite, loupgarou);
+            resultat = "Succès de la configuration.";
         } else {
-            resultat = "Échec de l'inscription.";
+            resultat = "Échec de la configuration.";
         }
         
         return partie;

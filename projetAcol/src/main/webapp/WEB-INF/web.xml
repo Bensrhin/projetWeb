@@ -17,8 +17,8 @@
         <servlet-class>servlets.Restriction</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Partie</servlet-name>
-        <servlet-class>servlets.Partie</servlet-class>
+        <servlet-name>ConfigurationPartie</servlet-name>
+        <servlet-class>servlets.ConfigurationPartie</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Inscription</servlet-name>
@@ -29,7 +29,7 @@
         <url-pattern>/restriction</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Partie</servlet-name>
-        <url-pattern>/partie</url-pattern>
+        <servlet-name>ConfigurationPartie</servlet-name>
+        <url-pattern>/configurationpartie</url-pattern>
     </servlet-mapping>
 </web-app>

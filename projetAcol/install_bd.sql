@@ -20,13 +20,14 @@ create table Utilisateur
 ); 
 
 CREATE TABLE Partie (
-    idPartie number(6) DEFAULT id_partie.nextval PRIMARY KEY,
+    idPartie number(6) DEFAULT id_partie.nextval,
     maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
-    propLoup float(10) not null
+    propLoup float(10) not null,
+    primary key(idPartie,maitre)
 );
 
-create table Joeur (
+create table Joueur (
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     idPartie number(6) not null references Partie(idPartie),
     primary key(pseudonyme,idPartie)

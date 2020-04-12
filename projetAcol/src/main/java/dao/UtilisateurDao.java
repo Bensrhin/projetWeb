@@ -36,7 +36,7 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
             st.setString(2,password);
             st.setString(3,email);
             st.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e){ 
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
