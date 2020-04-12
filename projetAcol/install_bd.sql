@@ -13,14 +13,14 @@ CREATE SEQUENCE id_user;
 create table Utilisateur
 (
     idUser number(6) default id_user.nextval,
-    pseudonyme NVARCHAR2(20) not null,
+    pseudonyme NVARCHAR2(20) not null unique,
     password NVARCHAR2(65) not null,
     email VARCHAR(320) not null,
     primary key(idUser,pseudonyme)
 ); 
 
 CREATE TABLE Partie (
-    idPartie number(6) DEFAULT id_partie.nextval,
+    idPartie number(6) DEFAULT id_partie.nextval unique,
     maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
     propLoup float(10) not null,
