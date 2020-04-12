@@ -23,7 +23,7 @@
                 <br />
 
                 <label for="probabilite">Probabilité d'attribution des pouvoirs <span class="requis">*</span></label>
-                <input type="number" id="probabilite" name="probabilite" value="<c:out value="${partie.probabilite}"/>" step="0.01" min="0" max="1" />
+                <input type="number" id="probabilite" name="probabilite"  step="0.01" min="0" max="1" />
                 <span class="erreur">${partieform.erreurs['probabilite']}</span>
                 <br />
 
@@ -31,9 +31,10 @@
                 <input type="number" id="loupgarou" name="loupgarou" value="<c:out value="${partie.probaLoupGarou}"/>" step="0.01" min="0" max="0.33" />
                 <span class="erreur">${partieform.erreurs['loupgarou']}</span>
                 <br />
-
-
-                <input type="submit" value="Lancez la partie" class="sansLabel" />
+                
+                
+                <input type="hidden" name="action" value="AddPlayers"/>
+                <input type="submit" value="Ajouter les jouers" class="sansLabel" />
                 <br />
 
                 <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>

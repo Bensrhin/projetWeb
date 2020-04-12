@@ -24,13 +24,13 @@ CREATE TABLE Partie (
     maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
     propLoup float(10) not null,
-    primary key(idPartie,maitre)
+    primary key(maitre)
 );
 
 create table Joueur (
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     idPartie number(6) not null references Partie(idPartie),
-    primary key(pseudonyme,idPartie)
+    primary key(pseudonyme)
     
 );
 

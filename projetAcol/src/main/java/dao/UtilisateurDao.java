@@ -17,7 +17,7 @@ import beans.Utilisateur;
 import java.math.BigInteger;  
 import java.nio.charset.StandardCharsets; 
 import java.security.MessageDigest;  
-import java.security.NoSuchAlgorithmException;  
+import java.security.NoSuchAlgorithmException;
 
 
 public class UtilisateurDao extends AbstractDataBaseDAO{
@@ -128,6 +128,27 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
                 e.printStackTrace();
             }
         return generatedPass;
+    }
+    
+    public List<Utilisateur> getListeUtilisateurs(String maitre){
+         List<Utilisateur> result = new ArrayList<Utilisateur>();
+        try (
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+                ("SELECT * FROM Utilisateur where pseudonyme != ?");
+	     ) {
+            st.setString(1,maitre);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Utilisateur utilisateur = new Utilisateur();
+                utilisateur.setIdUser(rs.getInt("idUser"));
+                utilisateur.setNom(rs.getString("pseudonyme"));
+                result.add(utilisateur);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
     }
     
 }

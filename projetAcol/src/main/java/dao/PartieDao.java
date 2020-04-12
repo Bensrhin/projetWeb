@@ -25,13 +25,32 @@ public class PartieDao extends AbstractDataBaseDAO {
         super(ds);
     }
 
-    public void creerPartie(String maitre, double probabilite, double loupgarou) {
+    public int creerPartie(String maitre, double probabilite, double loupgarou) {
         try (
-            Connection conn = getConn();  PreparedStatement st = conn.prepareStatement("insert into Partie (maitre,probaPouvoir,propLoup) values (?,?,?)");) {
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement("insert into Partie (maitre,probaPouvoir,propLoup) values (?,?,?)");) {
             st.setString(1, maitre);
             st.setDouble(2, probabilite);
             st.setDouble(3, loupgarou);
             st.executeUpdate();
+            /** retourne la valeur de IdPartie **/
+            
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+        
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st2 = conn.prepareStatement("select idPartie  From Partie where maitre = ?");) {
+            st2.setString(1, maitre);
+            ResultSet res = st2.executeQuery();
+            int idPartie = 0;
+            if (res.next()){
+                idPartie =  res.getInt("idPartie");
+            }
+            return idPartie;
+            /** retourne la valeur de IdPartie **/
+            
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }

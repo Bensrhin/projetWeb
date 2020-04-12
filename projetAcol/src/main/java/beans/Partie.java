@@ -11,13 +11,13 @@ package beans;
  */
 public class Partie {
 
-    private long idPartie;
+    private int idPartie;
     private String maitre;
 
     private double probabilite;
     private double probaLoupGarou;
 
-    public void setIdPartie(long id) {
+    public void setIdPartie(int id) {
         this.idPartie = idPartie;
     }
 
@@ -29,7 +29,7 @@ public class Partie {
         this.probaLoupGarou = probaLoupGarou;
     }
 
-    public long getIdPartie() {
+    public int getIdPartie() {
         return this.idPartie;
     }
 

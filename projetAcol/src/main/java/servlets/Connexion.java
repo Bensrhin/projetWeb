@@ -20,7 +20,7 @@ import beans.Utilisateur;
 import dao.UtilisateurDao;
 import forms.ConnexionForm;
 import dao.DAOException;
-
+import listener.SessionTrack;
 /**
  *
  * @author amalou
@@ -76,6 +76,9 @@ public class Connexion extends HttpServlet {
          */
         if ( form.getErreurs().isEmpty() ) {
             session.setAttribute( ATT_SESSION_USER, utilisateur );
+            int online  = SessionTrack.getNumberOfUsersOnline();
+            request.setAttribute("onlineUsers", online);
+            //System.err.println("Nombre d'utilisateurs en ligne ", SessionTrack.getNumberOfUsersOnline());
         } else {
             session.setAttribute( ATT_SESSION_USER, null );
         }

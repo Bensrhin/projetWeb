@@ -38,7 +38,7 @@ public class PartieForm {
     }
     
     
-    public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao) {
+    public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao ) {
         
         String maitre = request.getParameter("maitre");
         double probabilite = getValeurChampProbabilite( request, CHAMP_PROBABILITE );
@@ -65,8 +65,9 @@ public class PartieForm {
         
 
         if ( erreurs.isEmpty() ) {
-            partieDao.creerPartie(maitre, probabilite, loupgarou);
+            int idPartie = partieDao.creerPartie(maitre, probabilite, loupgarou);
             resultat = "Succès de la configuration.";
+            partie.setIdPartie(idPartie);
         } else {
             resultat = "Échec de la configuration.";
         }

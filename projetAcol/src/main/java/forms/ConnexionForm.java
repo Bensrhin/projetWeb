@@ -69,7 +69,7 @@ public class ConnexionForm {
         if ( erreurs.isEmpty() ) {
             resultat = "Succès de la connexion.";
         } else {
-            resultat = "Échec de la connexion." + utilisateur.getMotDePasse();
+            resultat = "Échec de la connexion.";
         }
         return utilisateur;
     }
