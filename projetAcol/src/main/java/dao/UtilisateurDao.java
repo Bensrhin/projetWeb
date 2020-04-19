@@ -135,7 +135,9 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         try (
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-                ("SELECT * FROM Utilisateur where pseudonyme != ?");
+             /** je n'affiche pas les utilisateurs qui sont déjà des joueurs **/
+                ("SELECT * FROM Utilisateur where pseudonyme != ? and "
+                        + "pseudonyme not in (select pseudonyme from joueur)");
 	     ) {
             st.setString(1,maitre);
             ResultSet rs = st.executeQuery();

@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import beans.Partie;
 
 public class PartieDao extends AbstractDataBaseDAO {
 
@@ -25,7 +26,7 @@ public class PartieDao extends AbstractDataBaseDAO {
         super(ds);
     }
 
-    public int creerPartie(String maitre, double probabilite, double loupgarou) {
+    public void creerPartie(String maitre, double probabilite, double loupgarou) {
         try (
             Connection conn = getConn();  
             PreparedStatement st = conn.prepareStatement("insert into Partie (maitre,probaPouvoir,propLoup) values (?,?,?)");) {
@@ -39,17 +40,19 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
         
+    }
+    
+    public boolean partieEnCours(Partie partie){
         try (
             Connection conn = getConn();  
-            PreparedStatement st2 = conn.prepareStatement("select idPartie  From Partie where maitre = ?");) {
-            st2.setString(1, maitre);
-            ResultSet res = st2.executeQuery();
-            int idPartie = 0;
-            if (res.next()){
-                idPartie =  res.getInt("idPartie");
+            PreparedStatement st = conn.prepareStatement("select * from Partie");) {
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                 partie.setMaitre(resultSet.getString("maitre"));
+                return true;
+            } else {
+                return false;
             }
-            return idPartie;
-            /** retourne la valeur de IdPartie **/
             
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);

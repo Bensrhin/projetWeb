@@ -20,7 +20,6 @@ create table Utilisateur
 ); 
 
 CREATE TABLE Partie (
-    idPartie number(6) DEFAULT id_partie.nextval unique,
     maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
     propLoup float(10) not null,
@@ -29,15 +28,13 @@ CREATE TABLE Partie (
 
 create table Joueur (
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
-    idPartie number(6) not null references Partie(idPartie),
     primary key(pseudonyme)
     
 );
 
 create table Message (
-    idPartie number(6) references Partie(idPartie),
     datePub DATE not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVRCHAR(10000) not null,
-    primary key(idPartie,datePub,pseudonyme)
+    primary key(datePub,pseudonyme)
 );

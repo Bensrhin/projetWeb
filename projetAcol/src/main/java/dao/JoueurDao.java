@@ -25,22 +25,20 @@ public class JoueurDao extends AbstractDataBaseDAO{
         super(ds);
     }
     
-    private void addJoueur(int idPartie, Joueur joueur){
+    public void addJoueur(Joueur joueur){
         try (
             Connection conn = getConn();  
             PreparedStatement st = conn.prepareStatement
-            ("insert into Joueur (pseudonyme,idPartie) values (?,?)");) {
+            ("insert into Joueur (pseudonyme) values (?)");) {
             st.setString(1, joueur.getPseudonyme());
-            st.setDouble(2, idPartie);
             st.executeUpdate();
         } catch (SQLException e) {
-            throw new DAOException("Erreur BD "  + "id Partie " + idPartie + e.getMessage(), e);
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
-    public void addJoueurs(int idPartie, List<Joueur> joueurs){
+    public void addJoueurs(List<Joueur> joueurs){
         for (Joueur j: joueurs){
-            j.setIdPartie(idPartie);
-            this.addJoueur(idPartie,j);
+            this.addJoueur(j);
         }
     }
 }

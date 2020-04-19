@@ -11,15 +11,12 @@ package beans;
  */
 public class Partie {
 
-    private int idPartie;
     private String maitre;
 
     private double probabilite;
     private double probaLoupGarou;
 
-    public void setIdPartie(int id) {
-        this.idPartie = idPartie;
-    }
+   
 
     public void setProba(double proba) {
         this.probabilite = probabilite;
@@ -29,9 +26,6 @@ public class Partie {
         this.probaLoupGarou = probaLoupGarou;
     }
 
-    public int getIdPartie() {
-        return this.idPartie;
-    }
 
     public double getProba() {
         return this.probaLoupGarou;

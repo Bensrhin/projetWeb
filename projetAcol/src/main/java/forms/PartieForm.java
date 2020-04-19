@@ -65,9 +65,8 @@ public class PartieForm {
         
 
         if ( erreurs.isEmpty() ) {
-            int idPartie = partieDao.creerPartie(maitre, probabilite, loupgarou);
+            partieDao.creerPartie(maitre, probabilite, loupgarou);
             resultat = "Succès de la configuration.";
-            partie.setIdPartie(idPartie);
         } else {
             resultat = "Échec de la configuration.";
         }

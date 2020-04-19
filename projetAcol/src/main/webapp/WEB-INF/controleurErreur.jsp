@@ -7,6 +7,7 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="UTF-8"/>
+         <link type="text/css" rel="stylesheet" href="style.css" />
         <title>Erreur Contrôleur</title>
     </head>
     <body>

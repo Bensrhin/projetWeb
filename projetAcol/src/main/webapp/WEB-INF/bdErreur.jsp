@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta charset="UTF-8"/>
+         <link type="text/css" rel="stylesheet" href="style.css" />
         <title>Erreur BD</title>
     </head>
     <body>

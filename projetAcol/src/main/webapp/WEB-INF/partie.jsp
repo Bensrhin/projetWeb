@@ -10,8 +10,8 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <link type="text/css" rel="stylesheet" href="style.css" />
         <title>Inscription</title>
-        <link type="text/css" rel="stylesheet" href="form.css" />
     </head>
     <body>
         <form method="post" action="configurationpartie">
@@ -23,12 +23,12 @@
                 <br />
 
                 <label for="probabilite">Probabilité d'attribution des pouvoirs <span class="requis">*</span></label>
-                <input type="number" id="probabilite" name="probabilite"  step="0.01" min="0" max="1" />
+                <input type="number" id="probabilite" name="probabilite"  value="0" step="0.01" min="0" max="1" />
                 <span class="erreur">${partieform.erreurs['probabilite']}</span>
                 <br />
 
                 <label for="loupgarou">Proportion des loups garous <span class="requis">*</span></label>
-                <input type="number" id="loupgarou" name="loupgarou" value="<c:out value="${partie.probaLoupGarou}"/>" step="0.01" min="0" max="0.33" />
+                <input type="number" id="loupgarou" name="loupgarou" value="0.33" step="0.01" min="0" max="0.33" />
                 <span class="erreur">${partieform.erreurs['loupgarou']}</span>
                 <br />
                 
