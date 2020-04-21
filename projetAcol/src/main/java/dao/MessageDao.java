@@ -43,7 +43,7 @@ public class MessageDao extends AbstractDataBaseDAO{
         try (
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-                ("SELECT * FROM Message");
+                ("SELECT * FROM Message ORDER by ID_MESSAGE");
 	     ) {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {

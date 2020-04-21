@@ -23,7 +23,8 @@
   <div class="chat-container">
         <c:forEach items="${messages}" var="message">
             <div class="message">
-            <div class="datetime">sent by ${message.nameUtilisateur} at ${message.date}</div>
+            <div class="datetime">${message.date}</div>
+            <div class="pseudonyme">${message.nameUtilisateur}</div> 
             <p>${message.contenu}</p>
             </div>
         </c:forEach>
