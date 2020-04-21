@@ -15,7 +15,7 @@
         <title>Jeu</title>    
     </head>
     <body>
-        <h1>Bienvenue dans le jeu!</h1>
+        <h1>les loups-garous vs les humains</h1>
         <!DOCTYPE html>
 
 <form method="post" action="Jeu">
