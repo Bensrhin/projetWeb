@@ -35,7 +35,7 @@ create table Joueur (
 
 create table Message (
     id_Message number(6) default id_Message.nextval,
-    datePub DATE not null,
+    datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
     primary key(id_Message)
