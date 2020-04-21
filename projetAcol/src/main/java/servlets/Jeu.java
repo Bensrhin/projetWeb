@@ -84,7 +84,7 @@ public class Jeu extends HttpServlet {
            List<Message> messages = messageDao.getListeMessages();
            System.err.println("messages = " + messages);
            request.setAttribute(ATT_MESSAGES, messages);
-           this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+           response.sendRedirect("/projetAcol/Jeu");
        }
     }
 

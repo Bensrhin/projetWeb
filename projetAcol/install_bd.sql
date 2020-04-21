@@ -38,5 +38,5 @@ create table Message (
     datePub DATE not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
-    primary key(datePub)
+    primary key(id_Message)
 );
