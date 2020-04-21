@@ -38,7 +38,7 @@ public class ConnexionForm {
         String motDePasse = getValeurChamp( request, CHAMP_PASS );
         
         /** Hashage de mot de passe **/
-        String hashPass = userDao.hashPassword(motDePasse);
+      
         Utilisateur utilisateur = new Utilisateur();
 
         /* Validation du champ email. */
@@ -55,19 +55,19 @@ public class ConnexionForm {
         } catch ( Exception e ) {
             setErreur( CHAMP_PASS, e.getMessage() );
         }
-        utilisateur.setNom( pseudonyme );
-        utilisateur.setMotDePasse( hashPass );
-
-        /* Initialisation du résultat global de la validation. */
         
-        try{
-            connexionUser(utilisateur,userDao);
-        } catch (Exception e) {
-            setErreur(CHAMP_CONX, e.getMessage());
-        }
+
         
         if ( erreurs.isEmpty() ) {
-            resultat = "Succès de la connexion.";
+            try{
+                utilisateur.setNom( pseudonyme );
+                String hashPass = userDao.hashPassword(motDePasse);
+                utilisateur.setMotDePasse( hashPass );
+                connexionUser(utilisateur,userDao);
+                resultat = "Succès de la connexion.";
+            } catch (Exception e) {
+                setErreur(CHAMP_CONX, e.getMessage());
+            }
         } else {
             resultat = "Échec de la connexion.";
         }

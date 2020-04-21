@@ -29,6 +29,9 @@ CREATE TABLE Partie (
 
 create table Joueur (
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
+    elimine NUMBER(1) not null check (elimine in (1,0)),
+    role NVARCHAR2(20) not null check (role in ('humain','loupGarou')),
+    pouvoir NVARCHAR2(20) not null check (pouvoir in ('aucun', 'voyance', 'contamination')),
     primary key(pseudonyme)
     
 );

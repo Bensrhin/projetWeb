@@ -16,13 +16,16 @@ import dao.UtilisateurDao;
 import javax.servlet.http.HttpServletRequest;
 import beans.Utilisateur;
 import dao.PartieDao;
-
-
+import dao.JoueurDao;
+import beans.Joueur;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PartieForm {
     
     private static final String CHAMP_PROBABILITE    = "probabilite";
     private static final String CHAMP_LOUPGAROU    = "loupgarou";
+    private static final String CHAMP_JOUEURS = "joueurs";
     
     private String resultat;
     private Map<String, String> erreurs  = new HashMap<String, String>();
@@ -38,11 +41,13 @@ public class PartieForm {
     }
     
     
-    public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao ) {
+    public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao, 
+            List<Joueur> joueurs, JoueurDao joueurDao) {
         
         String maitre = request.getParameter("maitre");
         double probabilite = getValeurChampProbabilite( request, CHAMP_PROBABILITE );
         double loupgarou = getValeurChampLoupGarou( request, CHAMP_LOUPGAROU );
+        
 
         Partie partie = new Partie();
         
@@ -62,10 +67,16 @@ public class PartieForm {
         }
         partie.setProbaLoupGarou( loupgarou );
 
-        
+        try {
+            validateJoueurs(joueurs);
+        } catch (Exception e){
+            setErreur(CHAMP_JOUEURS, e.getMessage());
+        }
 
         if ( erreurs.isEmpty() ) {
+           
             partieDao.creerPartie(maitre, probabilite, loupgarou);
+            joueurDao.addJoueurs(joueurs);
             resultat = "Succès de la configuration.";
         } else {
             resultat = "Échec de la configuration.";
@@ -86,7 +97,11 @@ public class PartieForm {
         } 
     }
     
-
+    private void validateJoueurs(List<Joueur> joueurs) throws Exception {
+        if (joueurs.size() < 5){
+            throw new Exception("Il faut au moins avoir 5 joueurs pour lancer une partie de jeu");
+        }
+    }
 /*
  * Ajoute un message correspondant au champ spécifié à la map des erreurs.
  */

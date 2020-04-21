@@ -38,10 +38,17 @@
                 <input type="submit" value="Inscription" class="sansLabel" />
                 <!--  Cette ligne sera utile si on veut regrouper les deux action connexion et inscription-->
                 <input type="hidden" name="action" value="inscription" />
+               
                 <br />
                 
                 <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
-            </fieldset>
+            
         </form>
+         
+        <form method="post" action="inscription">
+            <input type="submit" value="Retour à la page de connexion" class="sansLabel" />
+            <input type="hidden" name="action" value="connexion" />
+        </form>
+        </fieldset>  
     </body>
 </html>

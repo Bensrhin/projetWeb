@@ -16,9 +16,26 @@
     <body>
         <form method="post" action="configurationpartie">
             <fieldset>
+                
                 <legend>Configuration de la partie</legend>
                 <p>Commencez la configuration de la partie</p>
+                <br/>
+                <p> Selectionner les utilisateurs à jouer dans la partie ,au minimum 5 joueurs</p>
+                <br/>
+                <table>
+                <tr>
+                    <th><!--Utilisateur--></th>
+                    <th><!-- ajouter --></th>
+                </tr>
+                <c:forEach items="${utilisateur}" var="utilisateur">
+                    <tr>
+                        <td>${utilisateur.nom}</td>
+                        <td><a href="configurationpartie?action=addUser&name=${utilisateur.nom}">ajouter</a></td>
 
+                    </tr>
+                </c:forEach>
+                </table>
+                
                 <input type=hidden id="maitre" name="maitre" value= "${sessionScope.sessionUtilisateur.nom}" size="20" maxlength="20" />
                 <br />
 
@@ -32,13 +49,16 @@
                 <span class="erreur">${partieform.erreurs['loupgarou']}</span>
                 <br />
                 
+            </fieldset>
+  
+               
                 
-                <input type="hidden" name="action" value="AddPlayers"/>
-                <input type="submit" value="Ajouter les jouers" class="sansLabel" />
+                <input type="hidden" name="action" value="LancerPartie"/>
+                <input type="submit" value="Lancez la partie" class="sansLabel" />
                 <br />
 
                 <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
-            </fieldset>
+                
         </form>
     </body>
 </html>

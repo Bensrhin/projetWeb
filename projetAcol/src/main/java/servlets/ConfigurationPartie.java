@@ -40,7 +40,8 @@ public class ConfigurationPartie extends HttpServlet {
     public static final String ATT_PARTIE = "partie";
     public static final String ATT_FORM = "form";
     public static final String VUE = "/WEB-INF/partie.jsp";
-    private List<Joueur> joueurs = new ArrayList<>();
+    private List<Joueur> joueurs = new ArrayList<Joueur>();
+    private List<String> userAjouter = new ArrayList<String>();
     private Partie partie;
 
     /* pages d'erreurs */
@@ -69,12 +70,18 @@ public class ConfigurationPartie extends HttpServlet {
             if (action == null) {
                 Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
                 assert(maitre != null);
-                List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
+                List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
+                List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+                for (Utilisateur user : utilisateurs){
+                    if (!this.userAjouter.contains(user.getNom())){
+                        notAdded.add(user);
+                     }
+                }
                 /* On ajoute cette liste à la requête en tant qu’attribut afin de la transférer à la vue
                  * Rem. : ne pas confondre attribut (= objet ajouté à la requête par le programme
                  * avant un forward, comme ici)
                  * et paramètre (= chaîne représentant des données de formulaire envoyées par le client) */
-                request.setAttribute("utilisateur", utilisateurs);
+                request.setAttribute("utilisateur", notAdded);
                 this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
             } else if (action.equals("addUser")){
                 
@@ -96,33 +103,44 @@ public class ConfigurationPartie extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
         try {
-            if (action.equals("AddPlayers")) {
+             if (action.equals("LancerPartie")){
+                Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
+                assert(maitre != null);
                 PartieForm partieform = new PartieForm();
                 PartieDao partieDao = new PartieDao(ds);
                 UtilisateurDao userDao = new UtilisateurDao(ds);
-                this.partie = partieform.configurerPartie(request, partieDao);
-                /* Stockage du formulaire et du bean dans l'objet request */
-                request.setAttribute(ATT_FORM, partieform);
-                request.setAttribute(ATT_PARTIE, partie);
-                Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
-                assert(maitre != null);
+                JoueurDao joueursDao = new JoueurDao(ds);
                 List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
+                List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+                for (Utilisateur user : utilisateurs){
+                    if (!this.userAjouter.contains(user.getNom())){
+                        notAdded.add(user);
+                     }
+                }
                 /* On ajoute cette liste à la requête en tant qu’attribut afin de la transférer à la vue
                  * Rem. : ne pas confondre attribut (= objet ajouté à la requête par le programme
                  * avant un forward, comme ici)
                  * et paramètre (= chaîne représentant des données de formulaire envoyées par le client) */
-                request.setAttribute("utilisateur", utilisateurs);
-                this.getServletContext().getRequestDispatcher("/WEB-INF/ajouteJoueur.jsp").forward(request, response);
-            } else if (action.equals("LancerPartie")){
+                request.setAttribute("utilisateur", notAdded);
+                this.partie = partieform.configurerPartie(request, partieDao, this.joueurs, joueursDao);
+                /* Stockage du formulaire et du bean dans l'objet request */
+                request.setAttribute(ATT_FORM, partieform);
+                request.setAttribute(ATT_PARTIE, partie);
                 
                 /**
                  * ancienne version
-                JoueurDao joueurs = new JoueurDao(ds);
+                 
                 joueurs.addJoueurs(this.joueurs);
                 **/
+                if ( partieform.getErreurs().isEmpty() ) {
+                    String redirectURL = "/projetAcol/restriction";
+                    response.sendRedirect(redirectURL);
+                } else {
+                    this.getServletContext().getRequestDispatcher("/WEB-INF/partie.jsp").forward(request, response);
+                }
                 
-                String redirectURL = "/projetAcol/restriction";
-                response.sendRedirect(redirectURL);
+                
+                
             }
         } catch (DAOException e) {
             erreurBD(request, response, e);
@@ -135,17 +153,24 @@ public class ConfigurationPartie extends HttpServlet {
         String name = request.getParameter("name");
         Joueur joueur = new Joueur(name);
         //ancienne version
-        //this.joueurs.add(joueur);
-        JoueurDao joueurDao = new JoueurDao(ds);
-        joueurDao.addJoueur(joueur);
+        this.joueurs.add(joueur);
+        this.userAjouter.add(name);
+        //JoueurDao joueurDao = new JoueurDao(ds);
+        //joueurDao.addJoueur(joueur);
         
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
         Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
-        List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
-        request.setAttribute("utilisateur", utilisateurs);
-        this.getServletContext().getRequestDispatcher("/WEB-INF/ajouteJoueur.jsp").forward(request, response);
+        List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
+        List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+        for (Utilisateur user : utilisateurs){
+            if (!this.userAjouter.contains(user.getNom())){
+                notAdded.add(user);
+             }
+        }
+        request.setAttribute("utilisateur", notAdded);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/partie.jsp").forward(request, response);
     }
        
 }

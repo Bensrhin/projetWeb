@@ -61,10 +61,7 @@ public class InscriptionForm {
             setErreur( CHAMP_PASS, e.getMessage() );
             setErreur( CHAMP_CONF, null );
         }
-        
-        String hashPass = userDao.hashPassword(motDePasse);
-        
-        utilisateur.setMotDePasse( hashPass );
+     
 
         try {
             validationNom( nom ,userDao);
@@ -74,6 +71,8 @@ public class InscriptionForm {
         utilisateur.setNom( nom );
 
         if ( erreurs.isEmpty() ) {
+            String hashPass = userDao.hashPassword(motDePasse);
+            utilisateur.setMotDePasse( hashPass );
             userDao.creerUtilisateur(nom, hashPass, email);
             resultat = "Succès de l'inscription.";
         } else {

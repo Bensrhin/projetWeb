@@ -54,19 +54,29 @@ public class Inscription extends HttpServlet {
     }
 	
     public void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException{
-        /* Préparation de l'objet formulaire */
-        InscriptionForm form = new InscriptionForm();
-        UtilisateurDao userDao = new UtilisateurDao(ds);
-        /* Appel au traitement et à la validation de la requête, et récupération du bean en résultant */
-        try {
-            Utilisateur utilisateur = form.inscrireUtilisateur(request, userDao);
-            /* Stockage du formulaire et du bean dans l'objet request */
-            request.setAttribute( ATT_FORM, form );
-            request.setAttribute( ATT_USER, utilisateur );
+        
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        try{
+            if (action == null){
+                 this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+            } else if (action.equals("connexion")){
+                
+                this.getServletContext().getRequestDispatcher("/WEB-INF/connexion.jsp").forward(request,response);
+            } else if (action.equals("inscription")){
+                /* Préparation de l'objet formulaire */
+                InscriptionForm form = new InscriptionForm();
+                UtilisateurDao userDao = new UtilisateurDao(ds);
+                /* Appel au traitement et à la validation de la requête, et récupération du bean en résultant */
+                Utilisateur utilisateur = form.inscrireUtilisateur(request, userDao);
+                /* Stockage du formulaire et du bean dans l'objet request */
+                request.setAttribute( ATT_FORM, form );
+                request.setAttribute( ATT_USER, utilisateur );
 
-            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+                this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );    
+            }
         } catch (DAOException e){
-            erreurBD(request,response,e);
+            erreurBD(request, response, e);
         }
         
     }
