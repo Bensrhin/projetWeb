@@ -28,7 +28,7 @@ public class MessageDao extends AbstractDataBaseDAO{
             Connection conn = getConn();  
             PreparedStatement st = conn.prepareStatement
             ("insert into Message (datePub, pseudonyme, contenu) values (?, ?, ?)");) {
-            st.setDate(1, m.getDate());
+            st.setString(1, m.getDate());
             st.setString(2, m.getNameUtilisateur());
             st.setString(3, m.getContenu());
             System.err.println("Name " +m.getNameUtilisateur());
@@ -43,11 +43,11 @@ public class MessageDao extends AbstractDataBaseDAO{
         try (
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-                ("SELECT * FROM Message");
+                ("SELECT * FROM Message ORDER by ID_MESSAGE");
 	     ) {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                Message message = new Message(rs.getDate("datePub"), rs.getString("pseudonyme"), rs.getString("contenu"));
+                Message message = new Message(rs.getString("datePub"), rs.getString("pseudonyme"), rs.getString("contenu"));
                 result.add(message);
             }
         } catch (SQLException e) {

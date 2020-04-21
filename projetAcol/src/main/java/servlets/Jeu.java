@@ -7,11 +7,13 @@ package servlets;
 
 import beans.Message;
 import beans.Utilisateur;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import dao.DAOException;
 import dao.MessageDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.Resource;
@@ -78,13 +80,15 @@ public class Jeu extends HttpServlet {
         if(action.equals("SendMess")){
            String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
            String contenu = request.getParameter("contenu");
-           Date date = new Date(System.currentTimeMillis());
-           Message m = new Message(date, pseudoName, contenu);
+           Date date = new Date();
+           SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
+           String dateString = sdf.format(date);
+           Message m = new Message(dateString, pseudoName, contenu);
            messageDao.addMessage(m);
            List<Message> messages = messageDao.getListeMessages();
            System.err.println("messages = " + messages);
            request.setAttribute(ATT_MESSAGES, messages);
-           this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+           response.sendRedirect("/projetAcol/Jeu");
        }
     }
 

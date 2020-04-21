@@ -5,7 +5,6 @@
  */
 package beans;
 
-import java.sql.Date;
 
 /**
  *
@@ -13,20 +12,20 @@ import java.sql.Date;
  */
 public class Message {
 
-    public Message(Date date, String nameUtilisateur, String contenu) {
+    public Message(String date, String nameUtilisateur, String contenu) {
         this.date = date;
         this.nameUtilisateur = nameUtilisateur;
         this.contenu = contenu;
     }
-    Date date;
+    String date;
     String nameUtilisateur;
     String contenu;
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
