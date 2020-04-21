@@ -10,6 +10,7 @@
 
 drop SEQUENCE id_partie;
 drop SEQUENCE id_user;
-drop table Utilisateur;
+drop SEQUENCE id_Message;
 drop table Partie;
 drop table Joeur;
+drop table Message;

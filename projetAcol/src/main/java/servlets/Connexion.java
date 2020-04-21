@@ -74,19 +74,20 @@ public class Connexion extends HttpServlet {
          * Si aucune erreur de validation n'a eu lieu, alors ajout du bean
          * Utilisateur à la session, sinon suppression du bean de la session.
          */
+        
+        /* Stockage du formulaire et du bean dans l'objet request */
+        request.setAttribute( ATT_FORM, form );
+        request.setAttribute( ATT_USER, utilisateur );
+        
         if ( form.getErreurs().isEmpty() ) {
             session.setAttribute( ATT_SESSION_USER, utilisateur );
             int online  = SessionTrack.getNumberOfUsersOnline();
             request.setAttribute("onlineUsers", online);
-            //System.err.println("Nombre d'utilisateurs en ligne ", SessionTrack.getNumberOfUsersOnline());
+            System.err.println("Nombre d'utilisateurs en ligne " + SessionTrack.getNumberOfUsersOnline());
+            response.sendRedirect("/projetAcol/restriction");
         } else {
             session.setAttribute( ATT_SESSION_USER, null );
+            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
         }
-
-        /* Stockage du formulaire et du bean dans l'objet request */
-        request.setAttribute( ATT_FORM, form );
-        request.setAttribute( ATT_USER, utilisateur );
-
-        this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }
 }

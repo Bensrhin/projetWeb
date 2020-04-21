@@ -152,5 +152,21 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
 	}
 	return result;
     }
-    
+        public boolean participePartie(String Name){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("select * from Joueur where pseudonyme = ?");) {
+            st.setString(1, Name);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
 }

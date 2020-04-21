@@ -9,6 +9,7 @@
  */
 CREATE SEQUENCE id_partie;
 CREATE SEQUENCE id_user;
+CREATE SEQUENCE id_Message;
 
 create table Utilisateur
 (
@@ -33,8 +34,9 @@ create table Joueur (
 );
 
 create table Message (
+    id_Message number(6) default id_Message.nextval,
     datePub DATE not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
-    contenu NVRCHAR(10000) not null,
-    primary key(datePub,pseudonyme)
+    contenu NVARCHAR2(2000) not null,
+    primary key(datePub)
 );

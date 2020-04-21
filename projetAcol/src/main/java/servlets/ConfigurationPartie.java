@@ -40,7 +40,7 @@ public class ConfigurationPartie extends HttpServlet {
     public static final String ATT_PARTIE = "partie";
     public static final String ATT_FORM = "form";
     public static final String VUE = "/WEB-INF/partie.jsp";
-    private List<Joueur> joueurs = new ArrayList<Joueur>();
+    private List<Joueur> joueurs = new ArrayList<>();
     private Partie partie;
 
     /* pages d'erreurs */

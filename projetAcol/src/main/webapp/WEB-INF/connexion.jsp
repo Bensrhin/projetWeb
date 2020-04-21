@@ -35,17 +35,6 @@
                 
                 <span class="erreur">${form.erreurs['connexion']}</span>
                 <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
-                
-                <%-- Vérification de la présence d'un objet utilisateur en session --%>
-                <c:if test="${!empty sessionScope.sessionUtilisateur}">
-                    <%-- Si l'utilisateur existe en session, alors on affiche son adresse email. --%>
-                    <p class="succes">Vous êtes connecté(e) avec le pseudonyme : ${sessionScope.sessionUtilisateur.nom}</p>
-                    
-                    <%
-                    String redirectURL = "/projetAcol/restriction";
-                    response.sendRedirect(redirectURL);
-                    %>
-                </c:if>
             </fieldset>
         <fieldset>
             <legend> Créer un compte </legend>

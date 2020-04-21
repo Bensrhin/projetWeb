@@ -24,7 +24,10 @@ public class SessionTrack implements HttpSessionListener
     public static int getNumberOfUsersOnline() { 
         return numberOfUsersOnline;
     }
-
+    
+    public static void decreaseNumberOfUsersOnline() { 
+        numberOfUsersOnline--;
+    }
     public void sessionCreated(HttpSessionEvent event) {
 
         System.err.println("Session created by Id : " + event.getSession().getId());

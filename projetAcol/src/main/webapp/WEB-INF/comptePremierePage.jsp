@@ -14,6 +14,11 @@
         <title>Page d'accueil compte</title>    
     </head>
     <body>
+       <form method="post" action="Deconnexion">
+            <input type="submit" value="Deconnexion" class="Deconnexion" />
+            <span class="erreur">${form.erreurs['Deconnexion']}</span>
+            <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
+        </form>
         <br><br><br><br><br><br>
         <h1>Bienvenue dans votre compte  ${sessionScope.sessionUtilisateur.nom} </h1>
         <br><br>
@@ -24,13 +29,14 @@
             <c:when test="${partieEnCours == 0}">
                <a href="configurationpartie" class="button">Nouvelle Partie</a>
             </c:when>
-            <c:otherwise>
+            <c:when test="${participe == '0'}">
                  Une partie crée par : ${partieC.maitre} est actuellement en cours , veuillez attendre la fin de cette partie, pour créer une nouvelle partie
                    <br><br>
-              TODO : ce bouton doit apparaitre uniquement si l'utilisatuer est un joueur dans une partie en cours 
+            </c:when>
+            <c:when test="${participe == '1'}">
               <br></br>
-              <a href="" class="button">Accéder à la partie en cours </a>
-            </c:otherwise>
+              <a href="Jeu" class="button">Accéder à la partie en cours </a>
+            </c:when>
           </c:choose>
                
           

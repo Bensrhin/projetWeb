@@ -39,6 +39,7 @@ public class Restriction extends HttpServlet {
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String ATT_PARTIE = "partieEnCours";
     public static final String ATT_PARTIE_C = "partieC";
+    public static final String ATT_PARTICIPE = "participe";
     
     private void erreurBD(HttpServletRequest request,
                 HttpServletResponse response, DAOException e)
@@ -67,13 +68,25 @@ public class Restriction extends HttpServlet {
                 /* verification d'une partie en cours */
                 PartieDao partieDao = new PartieDao(ds);
                 Partie partie = new Partie();
+                UtilisateurDao utilisateurdao = new UtilisateurDao(ds);
                 try {
                         boolean reponse = partieDao.partieEnCours(partie);
                         if (reponse){
                              request.setAttribute(ATT_PARTIE,"1");
+                             String Name = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                             boolean participe = utilisateurdao.participePartie(Name);
+                             if(participe){
+                                 request.setAttribute(ATT_PARTICIPE, "1");
+                             }
+                             else{
+                                 request.setAttribute(ATT_PARTICIPE, "0");
+                             }
+                             
                         } else {
                             request.setAttribute(ATT_PARTIE,"0");
+                            request.setAttribute(ATT_PARTICIPE, "0");
                         }
+                        System.err.println("participe = " + request.getAttribute(ATT_PARTICIPE));
                         request.setAttribute(ATT_PARTIE_C,partie);
                         this.getServletContext().getRequestDispatcher( ACCES_RESTREINT ).forward( request, response );
                      }
