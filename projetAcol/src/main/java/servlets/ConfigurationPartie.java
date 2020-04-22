@@ -163,7 +163,7 @@ public class ConfigurationPartie extends HttpServlet {
         HttpSession session = request.getSession(false);
         Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
         List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
-        List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+        List<Utilisateur> notAdded = new ArrayList<>();
         for (Utilisateur user : utilisateurs){
             if (!this.userAjouter.contains(user.getNom())){
                 notAdded.add(user);

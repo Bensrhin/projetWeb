@@ -26,17 +26,21 @@
         <br><br>
         <p align="center">
             <c:choose> 
-            <c:when test="${partieEnCours == 0}">
+            <c:when test="${partieEnCours == '0'}">
                <a href="configurationpartie" class="button">Nouvelle Partie</a>
             </c:when>
-            <c:when test="${participe == '0'}">
+            <c:when test="${participe == '0' && partieEnCours == '1' && maitrejeu == '0'}">
                  Une partie crée par : ${partieC.maitre} est actuellement en cours , veuillez attendre la fin de cette partie, pour créer une nouvelle partie
                    <br><br>
             </c:when>
-            <c:when test="${participe == '1'}">
+            <c:when test="${participe == '1' && partieEnCours == '1'}">
               <br></br>
               <a href="Jeu" class="button">Accéder à la partie en cours </a>
             </c:when>
+            <c:when test="${maitrejeu == '1' && partieEnCours == '1'}">
+              <br></br>
+              <a href="Jeu?maitrejeu=1" class="button">Gerer la partie en cours </a>
+            </c:when> 
           </c:choose>
                
           

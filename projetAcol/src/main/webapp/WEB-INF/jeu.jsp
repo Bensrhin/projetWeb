@@ -18,6 +18,11 @@
         <h1>les loups-garous vs les humains</h1>
         <!DOCTYPE html>
 
+<form method="post">
+    <input type="submit" value="Nuit" class="Jour" />
+    <input type="submit" value="Jour" class="Nuit" />
+</form>        
+        
 <form method="post" action="Jeu">
 <div class="container">
   <div class="chat-container">
