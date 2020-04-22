@@ -40,7 +40,7 @@ public class Restriction extends HttpServlet {
     public static final String ATT_PARTIE = "partieEnCours";
     public static final String ATT_PARTIE_C = "partieC";
     public static final String ATT_PARTICIPE = "participe";
-    
+    public static final String ATT_MAITRE = "maitrejeu";
     private void erreurBD(HttpServletRequest request,
                 HttpServletResponse response, DAOException e)
             throws ServletException, IOException {
@@ -75,16 +75,24 @@ public class Restriction extends HttpServlet {
                              request.setAttribute(ATT_PARTIE,"1");
                              String Name = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
                              boolean participe = utilisateurdao.participePartie(Name);
+                             boolean maitrePartie = utilisateurdao.maitrePartie(Name);
                              if(participe){
                                  request.setAttribute(ATT_PARTICIPE, "1");
                              }
                              else{
                                  request.setAttribute(ATT_PARTICIPE, "0");
                              }
-                             
+                             if(maitrePartie){
+                                 request.setAttribute(ATT_MAITRE, "1");
+                                 System.err.println("maitre = 1 " );
+                             }
+                             else{
+                                 request.setAttribute(ATT_MAITRE, "0");
+                             }
                         } else {
                             request.setAttribute(ATT_PARTIE,"0");
                             request.setAttribute(ATT_PARTICIPE, "0");
+                            request.setAttribute(ATT_MAITRE, "0");
                         }
                         System.err.println("participe = " + request.getAttribute(ATT_PARTICIPE));
                         request.setAttribute(ATT_PARTIE_C,partie);

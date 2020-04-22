@@ -169,4 +169,22 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+
+    public boolean maitrePartie(String Name) {
+                try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("select maitre from Partie where maitre = ?");) {
+            st.setString(1, Name);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
 }

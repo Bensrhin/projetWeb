@@ -36,6 +36,7 @@ public class Jeu extends HttpServlet {
     private DataSource ds;
     public static final String ATT_USER         = "utilisateur";
     public static final String ATT_MESSAGES     = "messages";
+    public static final String ATT_MAITRE     = "maitre";
     public static final String ATT_FORM         = "form";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE              = "/WEB-INF/jeu.jsp";
@@ -53,12 +54,18 @@ public class Jeu extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
+        String maitre = request.getParameter("maitre");
         MessageDao messageDao = new MessageDao(ds);
        if (action == null){
             List<Message> messages = messageDao.getListeMessages();
-            System.err.println("messages = " + messages);
             request.setAttribute(ATT_MESSAGES, messages);
             this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+            if(maitre != null){
+                request.setAttribute(ATT_MAITRE, "1");
+            }
+            else{
+                request.setAttribute(ATT_MAITRE, "0");
+            }
             }
     }
 

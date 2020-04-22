@@ -84,3 +84,21 @@ h2{
 button{
     display: non;
   }
+
+  form input {
+    font: normal 8pt verdana, helvetica, sans-serif;
+    margin: 3px 3px 0px 0px;
+    border: 1px #999 solid;
+}
+
+form input.Jour {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+form input.Nuit {
+    position: absolute;
+    top: 80px;
+    right: 10px;
+}
