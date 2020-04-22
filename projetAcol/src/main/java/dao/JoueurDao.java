@@ -14,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;  
 import java.security.NoSuchAlgorithmException;
 import beans.Joueur;
+import beans.Pouvoir;
+import beans.Role;
 
 /**
  *
@@ -29,8 +31,21 @@ public class JoueurDao extends AbstractDataBaseDAO{
         try (
             Connection conn = getConn();  
             PreparedStatement st = conn.prepareStatement
-            ("insert into Joueur (pseudonyme) values (?)");) {
+            ("insert into Joueur (pseudonyme,elimine,role,pouvoir) values (?,?,?,?)");) {
             st.setString(1, joueur.getPseudonyme());
+            st.setInt(2,0);
+            if (joueur.getRole() == Role.humain){
+                st.setString(3, "humain");
+            } else {
+                st.setString(3, "loupGarou");
+            }
+            if (joueur.getPouvoir() == Pouvoir.aucun){
+                st.setString(4, "aucun");
+            } else if (joueur.getPouvoir() == Pouvoir.voyance){
+                st.setString(4, "voyance");
+            } else {
+                st.setString(4, "contamination");
+            }
             st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);

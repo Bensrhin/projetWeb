@@ -28,6 +28,7 @@ import java.util.List;
 import beans.Joueur;
 import java.util.ArrayList;
 
+
 /**
  *
  * @author nadir
@@ -110,18 +111,7 @@ public class ConfigurationPartie extends HttpServlet {
                 PartieDao partieDao = new PartieDao(ds);
                 UtilisateurDao userDao = new UtilisateurDao(ds);
                 JoueurDao joueursDao = new JoueurDao(ds);
-                List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
-                List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
-                for (Utilisateur user : utilisateurs){
-                    if (!this.userAjouter.contains(user.getNom())){
-                        notAdded.add(user);
-                     }
-                }
-                /* On ajoute cette liste à la requête en tant qu’attribut afin de la transférer à la vue
-                 * Rem. : ne pas confondre attribut (= objet ajouté à la requête par le programme
-                 * avant un forward, comme ici)
-                 * et paramètre (= chaîne représentant des données de formulaire envoyées par le client) */
-                request.setAttribute("utilisateur", notAdded);
+               
                 this.partie = partieform.configurerPartie(request, partieDao, this.joueurs, joueursDao);
                 /* Stockage du formulaire et du bean dans l'objet request */
                 request.setAttribute(ATT_FORM, partieform);
@@ -136,6 +126,16 @@ public class ConfigurationPartie extends HttpServlet {
                     String redirectURL = "/projetAcol/restriction";
                     response.sendRedirect(redirectURL);
                 } else {
+                    this.joueurs.clear();
+                    this.userAjouter.clear();
+                    List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
+                    List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+                    for (Utilisateur user : utilisateurs){
+                        if (!this.userAjouter.contains(user.getNom())){
+                            notAdded.add(user);
+                         }
+                    }
+                    request.setAttribute("utilisateur", notAdded);
                     this.getServletContext().getRequestDispatcher("/WEB-INF/partie.jsp").forward(request, response);
                 }
                 
