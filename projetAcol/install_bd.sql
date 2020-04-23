@@ -62,3 +62,5 @@ create table Archive (
     contenu NVARCHAR2(2000) not null,
     primary key(id_Message)
 );
+
+# peupler la base de donnée
