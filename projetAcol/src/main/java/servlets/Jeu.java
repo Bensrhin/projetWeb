@@ -43,6 +43,7 @@ public class Jeu extends HttpServlet {
     public static final String ATT_PERIODE      = "periode";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE              = "/WEB-INF/jeu.jsp";
+    public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -105,8 +106,7 @@ public class Jeu extends HttpServlet {
            messageDao.addMessage(m, partie.getPeriode());
            List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
            request.setAttribute(ATT_MESSAGES, messages);
-           //response.sendRedirect("/projetAcol/Jeu?pseudoName="+pseudoName);
-           this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+           response.sendRedirect("/projetAcol/Jeu");
        }
     }
 

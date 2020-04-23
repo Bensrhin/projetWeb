@@ -49,6 +49,8 @@ public class Inscription extends HttpServlet {
     }
     
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException{
+        
+        
         /* Affichage de la page d'inscription */
         this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }

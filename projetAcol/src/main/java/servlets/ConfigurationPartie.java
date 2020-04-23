@@ -40,7 +40,9 @@ public class ConfigurationPartie extends HttpServlet {
     private DataSource ds;
     public static final String ATT_PARTIE = "partie";
     public static final String ATT_FORM = "form";
+    public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     public static final String VUE = "/WEB-INF/partie.jsp";
+    public static final String ATT_SESSION_USER = "sessionUtilisateur";
     private List<Joueur> joueurs = new ArrayList<Joueur>();
     private List<String> userAjouter = new ArrayList<String>();
     private Partie partie;
@@ -64,26 +66,30 @@ public class ConfigurationPartie extends HttpServlet {
         /** Affichage des utilisateur en lignes dans la pages **/
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         UtilisateurDao userDao = new UtilisateurDao(ds);
 
         try {
             if (action == null) {
-                Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
-                assert(maitre != null);
-                List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
-                List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
-                for (Utilisateur user : utilisateurs){
-                    if (!this.userAjouter.contains(user.getNom())){
-                        notAdded.add(user);
-                     }
-                }
-                /* On ajoute cette liste à la requête en tant qu’attribut afin de la transférer à la vue
-                 * Rem. : ne pas confondre attribut (= objet ajouté à la requête par le programme
-                 * avant un forward, comme ici)
-                 * et paramètre (= chaîne représentant des données de formulaire envoyées par le client) */
-                request.setAttribute("utilisateur", notAdded);
-                this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+                
+                if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
+                    /* Redirection vers la page publique */
+                    //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+                     this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+                } else {
+                    Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
+                    assert(maitre != null);
+                    List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
+                    List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+                    for (Utilisateur user : utilisateurs){
+                        if (!this.userAjouter.contains(user.getNom())){
+                            notAdded.add(user);
+                         }
+                    }
+
+                    request.setAttribute("utilisateur", notAdded);
+                    this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+                } 
             } else if (action.equals("addUser")){
                 
                 actionAddUser(request, response, userDao);

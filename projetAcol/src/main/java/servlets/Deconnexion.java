@@ -67,7 +67,9 @@ public class Deconnexion extends HttpServlet {
         SessionTrack.decreaseNumberOfUsersOnline();
         int online  = SessionTrack.getNumberOfUsersOnline();
         request.setAttribute("onlineUsers", online);
-        this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+        /** go to restriction **/
+        response.sendRedirect("/projetAcol/restriction");
+        //this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }
 
     /**
