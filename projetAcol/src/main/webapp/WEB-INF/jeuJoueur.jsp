@@ -70,7 +70,7 @@
                 </c:forEach>
             </c:when>
             <c:when test="${joueur.role eq 'humain' && periode eq 'Nuit'}">
-                <p>C'est la nuit vous pouvez pas discuter.</p>
+                <p>C'est la nuit vous ne pouvez pas discuter</p>
             </c:when>
         </c:choose>
   </div>
