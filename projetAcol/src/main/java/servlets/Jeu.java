@@ -44,7 +44,8 @@ public class Jeu extends HttpServlet {
     public static final String ATT_PERIODE      = "periode";
     public static final String ATT_JOEUR = "joueur";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
-    public static final String VUE              = "/WEB-INF/jeu.jsp";
+    public static final String VUE_JOUEUR              = "/WEB-INF/jeuJoueur.jsp";
+    public static final String VUE_MAITRE             = "/WEB-INF/jeuMaitre.jsp";
     public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -83,6 +84,7 @@ public class Jeu extends HttpServlet {
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
                 if(maitre != null){
                     request.setAttribute(ATT_MAITRE, "1");
+                    this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
                 }
                 else{
                     
@@ -92,8 +94,9 @@ public class Jeu extends HttpServlet {
                     joueurDao.getInformations(joueur);
                     request.setAttribute(ATT_JOEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
+                    this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
                 }
-                this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+                
                 }
             }
             
