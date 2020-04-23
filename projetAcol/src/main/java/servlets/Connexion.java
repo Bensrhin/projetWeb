@@ -51,7 +51,6 @@ public class Connexion extends HttpServlet {
             if (action == null){
                 
                 response.sendRedirect("/projetAcol/restriction");
-                //this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
             } else if (action.equals("inscription")){
                 this.getServletContext().getRequestDispatcher("/WEB-INF/inscription.jsp").forward(request,response);
             }
