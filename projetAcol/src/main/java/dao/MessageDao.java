@@ -38,19 +38,36 @@ public class MessageDao extends AbstractDataBaseDAO{
     }
     public List<Message> getListeMessages(String periode){
         List<Message> result = new ArrayList<>();
-        try (
+        if(periode.equals("archive")){
+                    try (
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-                ("SELECT * FROM Message"+periode+" ORDER by ID_MESSAGE");
+                ("SELECT * FROM archive ORDER by ID_Archive");
 	     ) {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                Message message = new Message(rs.getString("datePub"), rs.getString("pseudonyme"), rs.getString("contenu"));
+                Message message = new Message(rs.getString("datePub"), rs.getString("pseudonyme"), rs.getString("contenu"), rs.getString("periode"));
                 result.add(message);
             }
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
-	return result;
+        }
+        else{
+        try (
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+                ("SELECT * FROM Message"+periode+" ORDER by ID_Message"+periode);
+	     ) {
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Message message = new Message(rs.getString("datePub"), rs.getString("pseudonyme"), rs.getString("contenu"), periode);
+                result.add(message);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+    }
+    return result;
     }
 }

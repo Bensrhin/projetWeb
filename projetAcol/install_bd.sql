@@ -40,25 +40,26 @@ create table Joueur (
 );
 
 create table MessageJour (
-    id_Message number(6) default id_MessageJour.nextval,
+    id_MessageJour number(6) default id_MessageJour.nextval,
     datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
-    primary key(id_Message)
+    primary key(id_MessageJour)
 );
 
 create table MessageNuit (
-    id_Message number(6) default id_MessageNuit.nextval,
+    id_MessageNuit number(6) default id_MessageNuit.nextval,
     datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
-    primary key(id_Message)
+    primary key(id_MessageNuit)
 );
 
 create table Archive (
-    id_Message number(6) default id_Archive.nextval,
+    id_Archive number(6) default id_Archive.nextval,
     datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
-    primary key(id_Message)
+    periode NVARCHAR2(10) not null check (periode in ('Jour', 'Nuit')),
+    primary key(id_Archive)
 );

@@ -54,13 +54,19 @@
             Periode : ${periode}  
         </p>
     </div>
-         
-        
+<c:choose>
+    <c:when test="${joueur.elimine}">
+                <form method="post" action = "Jeu">
+                    <input type="submit" value="Acceder au archive" class="Nuit"/>
+                    <input type="hidden" name="action" value="archive" />
+                </form>
+    </c:when>       
+</c:choose>
            
 <div class="container">
   <div class="chat-container">
         <c:choose>
-            <c:when test="${(joueur.role eq 'humain' && periode eq 'Jour') || (joueur.role eq 'loupGarou')}">
+            <c:when test="${(joueur.role eq 'humain' && periode eq 'Jour') || (joueur.role eq 'loupGarou') || (joueur.elimine)}">
                 <c:forEach items="${messages}" var="message">
                     <div class="message">
                     <div class="datetime">${message.date}</div>

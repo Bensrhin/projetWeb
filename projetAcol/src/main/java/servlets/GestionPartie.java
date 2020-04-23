@@ -57,9 +57,7 @@ public class GestionPartie extends HttpServlet {
         PartieDao partiedao = new PartieDao(ds);
         Partie partie = new Partie();
         partiedao.partieEnCours(partie);
-        System.err.println("actionnnnnnnnnn  === " +action);
         if(action.equals("passernuit")){
-            System.out.println("dazaaaat men hnayaaaa");
             partiedao.passerPeriode("Nuit", partie);
             request.setAttribute("periode", "Nuit");
         }
