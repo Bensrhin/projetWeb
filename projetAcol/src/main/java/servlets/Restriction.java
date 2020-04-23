@@ -31,6 +31,7 @@ import dao.DAOException;
 import dao.PartieDao;
 import beans.Partie;
 
+//@WebServlet(name = "restriction", urlPatterns = {"/restriction"})
 public class Restriction extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
@@ -61,7 +62,8 @@ public class Restriction extends HttpServlet {
          */
         if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
             /* Redirection vers la page publique */
-            response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+            //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+            this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
         } else 
             {
                 /* Affichage de la page restreinte */

@@ -40,6 +40,7 @@ public class Jeu extends HttpServlet {
     public static final String ATT_FORM         = "form";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE              = "/WEB-INF/jeu.jsp";
+    public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -56,16 +57,24 @@ public class Jeu extends HttpServlet {
         String action = request.getParameter("action");
         String maitre = request.getParameter("maitre");
         MessageDao messageDao = new MessageDao(ds);
+        HttpSession session = request.getSession();
+        
        if (action == null){
-            List<Message> messages = messageDao.getListeMessages();
-            request.setAttribute(ATT_MESSAGES, messages);
-            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
-            if(maitre != null){
-                request.setAttribute(ATT_MAITRE, "1");
+            if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
+                   /* Redirection vers la page publique */
+                    this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+            } else {
+                List<Message> messages = messageDao.getListeMessages();
+                request.setAttribute(ATT_MESSAGES, messages);
+                this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+                if(maitre != null){
+                    request.setAttribute(ATT_MAITRE, "1");
+                }
+                else{
+                    request.setAttribute(ATT_MAITRE, "0");
+                }
             }
-            else{
-                request.setAttribute(ATT_MAITRE, "0");
-            }
+            
             }
     }
 
