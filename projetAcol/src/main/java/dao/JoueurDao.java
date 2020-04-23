@@ -56,4 +56,39 @@ public class JoueurDao extends AbstractDataBaseDAO{
             this.addJoueur(j);
         }
     }
+    
+    public void getInformations(Joueur joueur){
+        try (
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("select * from Joueur where pseudonyme like ?");) {
+            st.setString(1, joueur.getPseudonyme());
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                // pouvoir
+                if (resultSet.getString("pouvoir").equals("aucun")){
+                    joueur.setPouvoir(Pouvoir.aucun);
+                } else if (resultSet.getString("pouvoir").equals("voyance")){
+                    joueur.setPouvoir(Pouvoir.voyance);
+                } else{
+                    joueur.setPouvoir(Pouvoir.contamination);
+                }
+                // elimine
+                if (resultSet.getInt("elimine") == 0){
+                    joueur.setElimine(false);
+                } else {
+                    joueur.setElimine(true);
+                }
+                // Role
+                if (resultSet.getString("role").equals("humain")){
+                    joueur.setRole(Role.humain);
+                }else {
+                    joueur.setRole(Role.loupGarou);
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
 }

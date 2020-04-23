@@ -8,6 +8,7 @@ package servlets;
 import beans.Message;
 import beans.Partie;
 import beans.Utilisateur;
+import beans.Joueur;
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import dao.DAOException;
 import dao.MessageDao;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import static servlets.Connexion.VUE;
-
+import dao.JoueurDao;
 /**
  *
  * @author benjelloun
@@ -41,6 +42,7 @@ public class Jeu extends HttpServlet {
     public static final String ATT_MAITRE     = "maitrejeu";
     public static final String ATT_FORM         = "form";
     public static final String ATT_PERIODE      = "periode";
+    public static final String ATT_JOEUR = "joueur";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE              = "/WEB-INF/jeu.jsp";
     public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
@@ -57,6 +59,8 @@ public class Jeu extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        /* Récupération de la session depuis la requête */
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
         String maitre = request.getParameter(ATT_MAITRE);
         MessageDao messageDao = new MessageDao(ds);
@@ -65,17 +69,34 @@ public class Jeu extends HttpServlet {
         System.err.println("Session = " + request.getSession());
         partiedao.partieEnCours(partie);
        if (action == null){
-            List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
-            request.setAttribute(ATT_MESSAGES, messages);
-            request.setAttribute(ATT_PERIODE, partie.getPeriode());
-            if(maitre != null){
-                request.setAttribute(ATT_MAITRE, "1");
+           
+            if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
+                    /* Redirection vers la page publique */
+                    //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+                     this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+            } else {
+                List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
+                
+                /** Chercher les informations sur le joueur **/
+                
+                request.setAttribute(ATT_MESSAGES, messages);
+                request.setAttribute(ATT_PERIODE, partie.getPeriode());
+                if(maitre != null){
+                    request.setAttribute(ATT_MAITRE, "1");
+                }
+                else{
+                    
+                    String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                    Joueur joueur = new Joueur(pseudoName);
+                    JoueurDao joueurDao = new JoueurDao(ds);
+                    joueurDao.getInformations(joueur);
+                    request.setAttribute(ATT_JOEUR, joueur);
+                    request.setAttribute(ATT_MAITRE, "0");
+                }
+                this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+                }
             }
-            else{
-                request.setAttribute(ATT_MAITRE, "0");
-            }
-            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
-            }
+            
     }
 
     /**

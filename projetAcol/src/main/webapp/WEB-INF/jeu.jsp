@@ -16,7 +16,49 @@
     </head>
     <body>
         <h1>les loups-garous vs les humains</h1>
-        <!DOCTYPE html>
+       
+        <c:choose>
+            <c:when test="${maitrejeu == '0'}">
+                <div class="information ">
+                <p> Nom de joeur : "${joueur.pseudonyme}"</p>
+               
+                 <c:choose>
+                    <c:when test="${joueur.elimine}">
+                         
+                        <p> Vous êtes éliminé de cette partie, vous pouvez lire encore la discussion de jeu. </p>
+                    </c:when>
+                </c:choose>
+              
+                <p> Role : 
+                    <c:choose>
+                    <c:when test="${joueur.roleSt eq 'humain'}">
+                        Humain.
+                    </c:when>
+                    <c:when test="${joueur.roleSt eq 'loupGarou'}">
+                        Loup Garou.
+                    </c:when>
+                </c:choose>
+                </p>
+                <p> Pouvoir : 
+                    <c:choose>
+                    <c:when test="${joueur.pouvoirSt eq 'voyance'}">
+                        Voyance
+                    </c:when>
+                    <c:when test="${joueur.pouvoirSt eq 'contamination'}">
+                        Contamination.
+                    </c:when>
+                    <c:when test="${joueur.pouvoirSt eq 'aucun'}">
+                        vous n'avez aucun pouvoir spéciale.
+                    </c:when>
+                </c:choose>
+                </p>
+            </div>
+                
+            </c:when>
+        </c:choose>
+        
+    
+            
 <c:choose>
     <c:when test="${maitrejeu == '1'&& periode eq'Jour'}">
         <form method="post" action = "GestionPartie">

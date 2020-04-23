@@ -135,3 +135,13 @@ form input.sansLabel{
     right: 0px;
     padding: 10px 20px;
 }
+.information{
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background: #355681;
+    border: 1px solid #fff;
+    padding: 5px 15px;
+    
+    
+}
