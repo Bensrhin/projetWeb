@@ -17,13 +17,28 @@
     <body>
         <h1>les loups-garous vs les humains</h1>
         <!DOCTYPE html>
-
-<form method="post">
-    <input type="submit" value="Nuit" class="Jour" />
-    <input type="submit" value="Jour" class="Nuit" />
-</form>        
-        
-<form method="post" action="Jeu">
+<c:choose>
+    <c:when test="${maitrejeu == '1'&& periode eq'Jour'}">
+        <form method="post" action = "GestionPartie">
+            <input type="submit" value="Nuit" class="Nuit"/>
+            <input type="hidden" name="action" value="passernuit" />
+        </form>
+        <form method="post" action = "GestionPartie">
+            <input type="submit" value="Jour" class="Jour" disabled/>
+            <input type="hidden" name="action" value="passeraujour" />    
+        </form> 
+    </c:when>
+    <c:when test="${maitrejeu == '1' && periode == 'Nuit'}">
+        <form method="post" action = "GestionPartie">
+            <input type="submit" value="Nuit" class="Nuit" disabled/>
+            <input type="hidden" name="action" value="passernuit" />
+        </form>
+        <form method="post" action = "GestionPartie">
+            <input type="submit" value="Jour" class="Jour" />
+            <input type="hidden" name="action" value="passeraujour" />    
+        </form> 
+    </c:when>
+</c:choose>        
 <div class="container">
   <div class="chat-container">
         <c:forEach items="${messages}" var="message">
@@ -34,12 +49,18 @@
             </div>
         </c:forEach>
   </div>
-
-    
+<form method="post" action="Jeu">
     <input type="text" name="contenu" value = "" placeholder="Your message">
-    <input type="submit" value="Send" class="sansLabel" />
-    <input type="hidden" name="action" value="SendMess" />
-  </form>
+    <c:choose>
+    <c:when test="${maitrejeu == '1'}">
+        <input type="submit" value="Send" class="sansLabel" disabled/>
+    </c:when>
+    <c:when test="${maitrejeu == '0'}">
+        <input type="submit" value="Send" class="sansLabel" />
+    </c:when>
+    </c:choose>
+    <input type="hidden" name="action" value="SendMess"/>
+</form>
 </div>
 
 </body>

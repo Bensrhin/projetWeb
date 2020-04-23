@@ -23,27 +23,25 @@ public class MessageDao extends AbstractDataBaseDAO{
         public MessageDao(DataSource ds){
         super(ds);
     }
-    public void addMessage(Message m){
+    public void addMessage(Message m, String periode){
         try (
             Connection conn = getConn();  
             PreparedStatement st = conn.prepareStatement
-            ("insert into Message (datePub, pseudonyme, contenu) values (?, ?, ?)");) {
+            ("insert into Message"+periode+" (datePub, pseudonyme, contenu) values (?, ?, ?)");) {
             st.setString(1, m.getDate());
             st.setString(2, m.getNameUtilisateur());
             st.setString(3, m.getContenu());
-            System.err.println("Name " +m.getNameUtilisateur());
-            System.err.println("Name " +m.getContenu());
             st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
-    public List<Message> getListeMessages(){
+    public List<Message> getListeMessages(String periode){
         List<Message> result = new ArrayList<>();
         try (
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-                ("SELECT * FROM Message ORDER by ID_MESSAGE");
+                ("SELECT * FROM Message"+periode+" ORDER by ID_MESSAGE");
 	     ) {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {

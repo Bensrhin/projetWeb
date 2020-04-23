@@ -69,7 +69,7 @@ public class Connexion extends HttpServlet {
 
         /* Récupération de la session depuis la requête */
         HttpSession session = request.getSession();
-
+        System.err.println(session);
         /**
          * Si aucune erreur de validation n'a eu lieu, alors ajout du bean
          * Utilisateur à la session, sinon suppression du bean de la session.

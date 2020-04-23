@@ -12,9 +12,17 @@ package beans;
 public class Partie {
 
     private String maitre;
-
+    private String periode;
     private double probabilite;
     private double probaLoupGarou;
+
+    public String getPeriode() {
+        return periode;
+    }
+
+    public void setPeriode(String periode) {
+        this.periode = periode;
+    }
 
    
 

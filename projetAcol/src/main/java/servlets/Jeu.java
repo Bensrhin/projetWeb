@@ -6,10 +6,12 @@
 package servlets;
 
 import beans.Message;
+import beans.Partie;
 import beans.Utilisateur;
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import dao.DAOException;
 import dao.MessageDao;
+import dao.PartieDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -36,8 +38,9 @@ public class Jeu extends HttpServlet {
     private DataSource ds;
     public static final String ATT_USER         = "utilisateur";
     public static final String ATT_MESSAGES     = "messages";
-    public static final String ATT_MAITRE     = "maitre";
+    public static final String ATT_MAITRE     = "maitrejeu";
     public static final String ATT_FORM         = "form";
+    public static final String ATT_PERIODE      = "periode";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE              = "/WEB-INF/jeu.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -54,18 +57,23 @@ public class Jeu extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
-        String maitre = request.getParameter("maitre");
+        String maitre = request.getParameter(ATT_MAITRE);
         MessageDao messageDao = new MessageDao(ds);
+        Partie partie = new Partie();
+        PartieDao partiedao = new PartieDao(ds);
+        System.err.println("Session = " + request.getSession());
+        partiedao.partieEnCours(partie);
        if (action == null){
-            List<Message> messages = messageDao.getListeMessages();
+            List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
             request.setAttribute(ATT_MESSAGES, messages);
-            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+            request.setAttribute(ATT_PERIODE, partie.getPeriode());
             if(maitre != null){
                 request.setAttribute(ATT_MAITRE, "1");
             }
             else{
                 request.setAttribute(ATT_MAITRE, "0");
             }
+            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
             }
     }
 
@@ -91,11 +99,14 @@ public class Jeu extends HttpServlet {
            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
            String dateString = sdf.format(date);
            Message m = new Message(dateString, pseudoName, contenu);
-           messageDao.addMessage(m);
-           List<Message> messages = messageDao.getListeMessages();
-           System.err.println("messages = " + messages);
+           Partie partie = new Partie();
+           PartieDao partiedao = new PartieDao(ds);
+           partiedao.partieEnCours(partie);
+           messageDao.addMessage(m, partie.getPeriode());
+           List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
            request.setAttribute(ATT_MESSAGES, messages);
-           response.sendRedirect("/projetAcol/Jeu");
+           //response.sendRedirect("/projetAcol/Jeu?pseudoName="+pseudoName);
+           this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
        }
     }
 

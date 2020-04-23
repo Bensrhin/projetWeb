@@ -67,7 +67,7 @@ public class Restriction extends HttpServlet {
                 /* Affichage de la page restreinte */
                 /* verification d'une partie en cours */
                 PartieDao partieDao = new PartieDao(ds);
-                Partie partie = new Partie();
+                Partie partie =  new Partie();
                 UtilisateurDao utilisateurdao = new UtilisateurDao(ds);
                 try {
                         boolean reponse = partieDao.partieEnCours(partie);

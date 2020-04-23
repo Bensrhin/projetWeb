@@ -10,7 +10,11 @@
 
 drop SEQUENCE id_partie;
 drop SEQUENCE id_user;
-drop SEQUENCE id_Message;
-drop table Partie;
+drop SEQUENCE id_MessageJour;
+drop SEQUENCE id_MessageNuit;
+drop SEQUENCE id_Archive
 drop table Joeur;
-drop table Message;
+drop table MessageNuit;
+drop table MessageJour;
+drop table Archive;
+drop table Partie;

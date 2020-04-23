@@ -9,7 +9,9 @@
  */
 CREATE SEQUENCE id_partie;
 CREATE SEQUENCE id_user;
-CREATE SEQUENCE id_Message;
+CREATE SEQUENCE id_MessageJour;
+CREATE SEQUENCE id_MessageNuit;
+CREATE SEQUENCE id_Archive;
 
 create table Utilisateur
 (
@@ -24,6 +26,7 @@ CREATE TABLE Partie (
     maitre NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     probaPouvoir float(10) not null,
     propLoup float(10) not null,
+    periode NVARCHAR2(10) not null check (periode in ('Jour', 'Nuit')),
     primary key(maitre)
 );
 
@@ -36,8 +39,24 @@ create table Joueur (
     
 );
 
-create table Message (
-    id_Message number(6) default id_Message.nextval,
+create table MessageJour (
+    id_Message number(6) default id_MessageJour.nextval,
+    datePub NVARCHAR2(40) not null,
+    pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
+    contenu NVARCHAR2(2000) not null,
+    primary key(id_Message)
+);
+
+create table MessageNuit (
+    id_Message number(6) default id_MessageNuit.nextval,
+    datePub NVARCHAR2(40) not null,
+    pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
+    contenu NVARCHAR2(2000) not null,
+    primary key(id_Message)
+);
+
+create table Archive (
+    id_Message number(6) default id_Archive.nextval,
     datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
