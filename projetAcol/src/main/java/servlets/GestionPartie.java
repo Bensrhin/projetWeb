@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 public class GestionPartie extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
-    public static final String VUE              = "/WEB-INF/jeu.jsp";
+    public static final String VUE              = "/WEB-INF/jeuMaitre.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

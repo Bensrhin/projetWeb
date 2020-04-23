@@ -95,8 +95,6 @@ button{
 }
 
 form input.Jour {
-position: absolute;
-right: 0px;
 padding: 10px 20px;
 display: inline-block;
 font-size: 24px;
@@ -112,7 +110,6 @@ box-shadow: 0 9px #999;
 }
 
 form input.Nuit {
-position: absolute;
 right: 0px;
 top: 200px;
 padding: 10px 20px;

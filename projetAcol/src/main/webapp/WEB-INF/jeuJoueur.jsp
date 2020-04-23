@@ -23,7 +23,6 @@
 
          <c:choose>
             <c:when test="${joueur.elimine}">
-
                 <p> Vous êtes éliminé de cette partie, vous pouvez lire encore la discussion de jeu. </p>
             </c:when>
         </c:choose>
@@ -51,25 +50,40 @@
             </c:when>
         </c:choose>
         </p>
+        <p>
+            Periode : ${periode}  
+        </p>
     </div>
          
         
            
 <div class="container">
   <div class="chat-container">
-        <c:forEach items="${messages}" var="message">
-            <div class="message">
-            <div class="datetime">${message.date}</div>
-            <div class="pseudonyme">${message.nameUtilisateur}</div> 
-            <p>${message.contenu}</p>
-            </div>
-        </c:forEach>
+        <c:choose>
+            <c:when test="${(joueur.role eq 'humain' && periode eq 'Jour') || (joueur.role eq 'loupGarou')}">
+                <c:forEach items="${messages}" var="message">
+                    <div class="message">
+                    <div class="datetime">${message.date}</div>
+                    <div class="pseudonyme">${message.nameUtilisateur}</div> 
+                    <p>${message.contenu}</p>
+                    </div>
+                </c:forEach>
+            </c:when>
+            <c:when test="${joueur.role eq 'humain' && periode eq 'Nuit'}">
+                <p>C'est la nuit vous pouvez pas discuter.</p>
+            </c:when>
+        </c:choose>
   </div>
 <form method="post" action="Jeu">
     <input type="text" name="contenu" value = "" placeholder="Your message">
-
-  
-    <input type="submit" value="Send" class="sansLabel" />
+    <c:choose>
+        <c:when test="${(joueur.role eq 'humain' && periode eq 'Nuit') || (joueur.elimine)}">
+            <input type="submit" value="Send" class="sansLabel" disabled/>
+        </c:when>
+        <c:otherwise>
+            <input type="submit" value="Send" class="sansLabel"/>
+        </c:otherwise>
+    </c:choose>
     <input type="hidden" name="action" value="SendMess"/>
 </form>
 </div>
