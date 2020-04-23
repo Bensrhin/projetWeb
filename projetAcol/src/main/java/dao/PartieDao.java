@@ -86,10 +86,11 @@ public class PartieDao extends AbstractDataBaseDAO {
             ResultSet resultSet = st.executeQuery();
             while(resultSet.next()){
                  try (
-            PreparedStatement st2 = conn.prepareStatement("insert into Archive (datePub,pseudonyme,contenu) values (?,?,?)");) {
+            PreparedStatement st2 = conn.prepareStatement("insert into Archive (datePub,pseudonyme,contenu, periode) values (?,?,?, ?)");) {
             st2.setString(1, resultSet.getString("datePub"));
             st2.setString(2, resultSet.getString("pseudonyme"));
             st2.setString(3, resultSet.getString("contenu"));
+            st2.setString(4, complem);
             st2.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);

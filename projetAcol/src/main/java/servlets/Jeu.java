@@ -45,8 +45,10 @@ public class Jeu extends HttpServlet {
     public static final String ATT_JOEUR = "joueur";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE_JOUEUR              = "/WEB-INF/jeuJoueur.jsp";
+    public static final String VUE_ARCHIVE              = "/WEB-INF/jeuArchive.jsp";
     public static final String VUE_MAITRE             = "/WEB-INF/jeuMaitre.jsp";
     public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
+    public static final String ROLE     = "role";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -67,8 +69,11 @@ public class Jeu extends HttpServlet {
         MessageDao messageDao = new MessageDao(ds);
         Partie partie = new Partie();
         PartieDao partiedao = new PartieDao(ds);
-        System.err.println("Session = " + request.getSession());
         partiedao.partieEnCours(partie);
+        String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+        Joueur joueur = new Joueur(pseudonyme);
+        JoueurDao joueurdao = new JoueurDao(ds);
+        joueurdao.getInformations(joueur);
        if (action == null){
            
             if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
@@ -87,11 +92,6 @@ public class Jeu extends HttpServlet {
                     this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
                 }
                 else{
-                    
-                    String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
-                    Joueur joueur = new Joueur(pseudoName);
-                    JoueurDao joueurDao = new JoueurDao(ds);
-                    joueurDao.getInformations(joueur);
                     request.setAttribute(ATT_JOEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
                     this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
@@ -117,21 +117,28 @@ public class Jeu extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
         MessageDao messageDao = new MessageDao(ds);
+        Partie partie = new Partie();
+        PartieDao partiedao = new PartieDao(ds);
+        partiedao.partieEnCours(partie);
+        List<Message> messages;
         if(action.equals("SendMess")){
            String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
            String contenu = request.getParameter("contenu");
            Date date = new Date();
            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
            String dateString = sdf.format(date);
-           Message m = new Message(dateString, pseudoName, contenu);
-           Partie partie = new Partie();
-           PartieDao partiedao = new PartieDao(ds);
-           partiedao.partieEnCours(partie);
+           Message m = new Message(dateString, pseudoName, contenu, partie.getPeriode());
            messageDao.addMessage(m, partie.getPeriode());
-           List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
+           messages = messageDao.getListeMessages(partie.getPeriode());
            request.setAttribute(ATT_MESSAGES, messages);
            response.sendRedirect("/projetAcol/Jeu");
        }
+        if(action.equals("archive")){
+            messages = messageDao.getListeMessages("archive");
+            request.setAttribute(ATT_MESSAGES, messages);
+            this.getServletContext().getRequestDispatcher( VUE_ARCHIVE).forward( request, response );
+        }
+        
     }
 
     /**

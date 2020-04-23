@@ -8,6 +8,7 @@
  * Created: 6 avr. 2020
  */
 
+
 drop SEQUENCE id_partie;
 drop SEQUENCE id_user;
 drop SEQUENCE id_MessageJour;

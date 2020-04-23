@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 public class GestionPartie extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
-    public static final String VUE              = "/WEB-INF/jeu.jsp";
+    public static final String VUE              = "/WEB-INF/jeuMaitre.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -57,9 +57,7 @@ public class GestionPartie extends HttpServlet {
         PartieDao partiedao = new PartieDao(ds);
         Partie partie = new Partie();
         partiedao.partieEnCours(partie);
-        System.err.println("actionnnnnnnnnn  === " +action);
         if(action.equals("passernuit")){
-            System.out.println("dazaaaat men hnayaaaa");
             partiedao.passerPeriode("Nuit", partie);
             request.setAttribute("periode", "Nuit");
         }
