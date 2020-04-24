@@ -15,6 +15,7 @@ public class Partie {
     private String periode;
     private double probabilite;
     private double probaLoupGarou;
+    private int nbJoueurs;
 
     public String getPeriode() {
         return periode;
@@ -24,8 +25,12 @@ public class Partie {
         this.periode = periode;
     }
 
-   
-
+    public int getNbJoueurs(){
+        return this.nbJoueurs;
+    }
+    public void setNbJoueurs(int nb){
+        this.nbJoueurs = nb;
+    }
     public void setProba(double proba) {
         this.probabilite = probabilite;
     }
