@@ -75,10 +75,7 @@ public class Jeu extends HttpServlet {
         Partie partie = new Partie();
         PartieDao partiedao = new PartieDao(ds);
         partiedao.partieEnCours(partie);
-        String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
-        Joueur joueur = new Joueur(pseudonyme);
-        JoueurDao joueurdao = new JoueurDao(ds);
-        joueurdao.getInformations(joueur);
+        
        if (action == null){
            
             if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
@@ -87,7 +84,10 @@ public class Jeu extends HttpServlet {
                      this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
             } else {
                 List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
-                
+                String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+                Joueur joueur = new Joueur(pseudonyme);
+                JoueurDao joueurdao = new JoueurDao(ds);
+                joueurdao.getInformations(joueur);
                 /** Chercher les informations sur le joueur **/
                 
                 request.setAttribute(ATT_MESSAGES, messages);

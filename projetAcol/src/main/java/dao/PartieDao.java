@@ -42,7 +42,19 @@ public class PartieDao extends AbstractDataBaseDAO {
         }
         
     }
-    
+    public int nbJoueurs(){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement("select count(*) from joueur where elimine = 0");) {
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                 return resultSet.getInt(1);
+            }
+            return 0;
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
     public boolean partieEnCours(Partie partie){
         try (
             Connection conn = getConn();  
@@ -51,6 +63,7 @@ public class PartieDao extends AbstractDataBaseDAO {
             if (resultSet.next()){
                  partie.setMaitre(resultSet.getString("maitre"));
                  partie.setPeriode(resultSet.getString("periode"));
+                 partie.setNbJoueurs(nbJoueurs());
                 return true;
             } else {
                 return false;

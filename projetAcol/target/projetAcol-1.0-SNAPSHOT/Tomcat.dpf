@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/projetAcol">
+  <Resource auth="Container" driverClassName="oracle.jdbc.OracleDriver" maxIdle="1" maxTotal="2" maxWaitMillis="20000" name="jdbc/bibliography" password="amaloun" type="javax.sql.DataSource" url="jdbc:oracle:thin:@oracle1.ensimag.fr:1521:oracle1" username="amaloun"/>
+</Context>

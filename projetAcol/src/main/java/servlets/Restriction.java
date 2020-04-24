@@ -83,6 +83,7 @@ public class Restriction extends HttpServlet {
                              }
                              else{
                                  request.setAttribute(ATT_PARTICIPE, "0");
+                                 request.setAttribute("nombre", partie.getNbJoueurs());
                              }
                              if(maitrePartie){
                                  request.setAttribute(ATT_MAITRE, "1");
