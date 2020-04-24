@@ -71,7 +71,6 @@ public class Jeu extends HttpServlet {
         PartieDao partiedao = new PartieDao(ds);
         partiedao.partieEnCours(partie);
         
-
        if (action == null){
            
             if ( session.getAttribute( ATT_SESSION_USER ) == null ) {

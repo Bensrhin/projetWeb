@@ -32,7 +32,7 @@
             <c:when test="${participe == '0' && partieEnCours == '1' && maitrejeu == '0'}">
             <h3>Une partie crée par <mark>${partieC.maitre}</mark> est actuellement en cours ...</h3>
             <h3> Il reste encore <mark>${nombre}</mark> villageois vivants.</h3>
-               <h3>Veuillez attendre la fin de cette partie.</h3>
+            <h3>Veuillez attendre la fin de cette partie.</h3>
                    <br><br>
             </c:when>
             <c:when test="${participe == '1' && partieEnCours == '1'}">
