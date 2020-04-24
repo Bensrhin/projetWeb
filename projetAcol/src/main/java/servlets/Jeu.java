@@ -29,6 +29,9 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import static servlets.Connexion.VUE;
 import dao.JoueurDao;
+import java.util.List;
+import java.util.ArrayList;
+import dao.ExercerPouvoirDao;
 /**
  *
  * @author benjelloun
@@ -42,13 +45,15 @@ public class Jeu extends HttpServlet {
     public static final String ATT_MAITRE     = "maitrejeu";
     public static final String ATT_FORM         = "form";
     public static final String ATT_PERIODE      = "periode";
-    public static final String ATT_JOEUR = "joueur";
+    public static final String ATT_JOUEUR = "joueur";
     public static final String ATT_SESSION_USER = "sessionUtilisateur";
     public static final String VUE_JOUEUR              = "/WEB-INF/jeuJoueur.jsp";
     public static final String VUE_ARCHIVE              = "/WEB-INF/jeuArchive.jsp";
     public static final String VUE_MAITRE             = "/WEB-INF/jeuMaitre.jsp";
     public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     public static final String ROLE     = "role";
+    public static final String EXERCER_PV     = "exercerPouvoir";
+    public static final String HUMAIN     = "humain";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -92,7 +97,7 @@ public class Jeu extends HttpServlet {
                     this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
                 }
                 else{
-                    request.setAttribute(ATT_JOEUR, joueur);
+                    request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
                     this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
                 }
@@ -138,7 +143,33 @@ public class Jeu extends HttpServlet {
             request.setAttribute(ATT_MESSAGES, messages);
             this.getServletContext().getRequestDispatcher( VUE_ARCHIVE).forward( request, response );
         }
+        if (action.equals("pouvoirContamination")){
+            exercerPouvoirContamination(request,response);
+        }
         
+    }
+    
+    private void exercerPouvoirContamination(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+            request.setCharacterEncoding("UTF-8");
+            /* Récupération de la session depuis la requête */
+             HttpSession session = request.getSession();
+            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+            Joueur joueur = new Joueur(pseudonyme);
+            JoueurDao joueurDao = new JoueurDao(ds);
+            joueurDao.getInformations(joueur);
+            // check if the player had already exercise its power
+            Joueur exercerSur = joueurDao.checkExercerPv(joueur);
+            if (exercerSur == null){
+                request.setAttribute(EXERCER_PV,false);
+                ExercerPouvoirDao exercerPv = new ExercerPouvoirDao(ds);
+                List<Joueur> humains  =  exercerPv.getHumains();
+                request.setAttribute(HUMAIN,humains);
+            } else {
+                request.setAttribute(EXERCER_PV,true);
+            }
+            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
     }
 
     /**

@@ -91,4 +91,22 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+    
+    public Joueur checkExercerPv(Joueur exercerPar){
+        try (
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("select exercerSur from ExercerPouvoir where exercerPar like ?");) {
+            st.setString(1, exercerPar.getPseudonyme());
+            ResultSet resultSet = st.executeQuery();
+            if (resultSet.next()){
+                // pouvoir
+                Joueur exercerSur = new Joueur(resultSet.getString("exercerSur"));
+                return exercerSur;
+                }
+            return null;
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
 }
