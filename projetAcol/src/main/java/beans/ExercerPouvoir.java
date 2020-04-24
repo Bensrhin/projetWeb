@@ -21,4 +21,12 @@ public class ExercerPouvoir {
     public void setExercerSur(String name){
         this.exercerSur = name;
     }
+    
+    public String getExercerPar(){
+        return this.exercerPar;
+    }
+    
+    public String getExercerSur(){
+        return this.exercerSur;
+    }
 }

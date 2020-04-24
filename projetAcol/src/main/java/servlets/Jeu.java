@@ -32,6 +32,7 @@ import dao.JoueurDao;
 import java.util.List;
 import java.util.ArrayList;
 import dao.ExercerPouvoirDao;
+import beans.ExercerPouvoir;
 /**
  *
  * @author benjelloun
@@ -99,7 +100,9 @@ public class Jeu extends HttpServlet {
                 else{
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
-                    this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
+                    /** vérifier si le joeur à un pouvoir */
+                    exercerPouvoirContamination(request,response);
+                   
                 }
                 
                 }
@@ -144,6 +147,16 @@ public class Jeu extends HttpServlet {
             this.getServletContext().getRequestDispatcher( VUE_ARCHIVE).forward( request, response );
         }
         if (action.equals("pouvoirContamination")){
+            messages = messageDao.getListeMessages(partie.getPeriode());
+            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+            Joueur joueur = new Joueur(pseudonyme);
+            JoueurDao joueurdao = new JoueurDao(ds);
+            joueurdao.getInformations(joueur);
+            /** Chercher les informations sur le joueur **/
+
+            request.setAttribute(ATT_MESSAGES, messages);
+            request.setAttribute(ATT_PERIODE, partie.getPeriode());
+            request.setAttribute(ATT_JOUEUR, joueur);
             exercerPouvoirContamination(request,response);
         }
         
@@ -154,7 +167,7 @@ public class Jeu extends HttpServlet {
         
             request.setCharacterEncoding("UTF-8");
             /* Récupération de la session depuis la requête */
-             HttpSession session = request.getSession();
+            HttpSession session = request.getSession();
             String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
             Joueur joueur = new Joueur(pseudonyme);
             JoueurDao joueurDao = new JoueurDao(ds);
@@ -163,12 +176,25 @@ public class Jeu extends HttpServlet {
             Joueur exercerSur = joueurDao.checkExercerPv(joueur);
             if (exercerSur == null){
                 request.setAttribute(EXERCER_PV,false);
-                ExercerPouvoirDao exercerPv = new ExercerPouvoirDao(ds);
-                List<Joueur> humains  =  exercerPv.getHumains();
+                ExercerPouvoirDao exercerPvDao = new ExercerPouvoirDao(ds);
+                List<Joueur> humains  =  exercerPvDao.getHumains();
                 request.setAttribute(HUMAIN,humains);
+                /** exercer le pouvoir **/
+                String name = request.getParameter("contamine");
+                if (name != null){
+                    /** le joueur veut appliqué son pouvoir **/ 
+                    ExercerPouvoir exercerPv = new ExercerPouvoir();
+                    exercerPv.setExercerPar(pseudonyme);
+                    exercerPv.setExercerSur(name);
+                    exercerPvDao.appliqueContamination(exercerPv);
+                    request.setAttribute(EXERCER_PV,true);
+                    request.setAttribute("exercerSur",name);
+                }
             } else {
                 request.setAttribute(EXERCER_PV,true);
+                request.setAttribute("exercerSur",exercerSur.getPseudonyme());
             }
+           
             this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
     }
 

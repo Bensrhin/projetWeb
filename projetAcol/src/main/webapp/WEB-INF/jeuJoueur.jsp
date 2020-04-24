@@ -124,16 +124,24 @@
              <c:choose>
             <c:when test="${not exercerPouvoir}">
                 <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
-                <p> Veuillez choisir le joueur à transformer en loup Garou </p>
-                <c:forEach items="${humain}" var="humain">
+                <p>
+                <label for="contamine">Veuillez choisir le joueur à transformer en loup Garou:</label>
+                <select name="contamine" id="contamine">
+                     <c:forEach items="${humain}" var="humain">
+                         <option value="${humain.pseudonyme}">${humain.pseudonyme}</option>
+                    </c:forEach>
                     
-                        <input name="exercerSur" type="radio" value="${humain.pseudonyme}">${humain.pseudonyme}
-
-                        </br>
-                </c:forEach>
-               
+                </select>
+            </p>
+            <input type="submit" name="bouton" value="Contaminé cet humain">
+            </c:when>
+            
+            <c:when test="${exercerPouvoir}">
+                <p> Vous avez déja exercer votre pouvoir sur ${exercerSur} </p>
+                
             </c:when>
         </c:choose>
+         
         <input type="hidden" name="action" value="pouvoirContamination"/>
         </form>
     </div>

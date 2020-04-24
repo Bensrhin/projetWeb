@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import beans.Joueur;
 import beans.Pouvoir;
 import beans.Role;
+import beans.ExercerPouvoir;
 
 /**
  *
@@ -47,6 +48,50 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         }
         
         return humains;
+    }
+    
+    
+    public void appliqueContamination(ExercerPouvoir exercerPv){
+        
+        String loupGarou = exercerPv.getExercerPar();
+        String humain = exercerPv.getExercerSur();
+        
+        try (
+            
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("update joueur set role = 'loupGarou' where pseudonyme like ?");) {
+            st.setString(1, humain);
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+        
+        try (
+            
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("insert into ExercerPouvoir (exercerPar,exercerSur) values (?,?)");) {
+            st.setString(1, loupGarou);
+            st.setString(2, humain);
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
+    
+    public void videTable(){
+        
+        try (
+            
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("delete exercerPouvoir");) {
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+        
     }
     
 }
