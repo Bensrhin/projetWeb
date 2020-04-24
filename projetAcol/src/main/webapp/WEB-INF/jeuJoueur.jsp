@@ -19,7 +19,7 @@
        
            
         <div class="information ">
-        <p> Nom de joeur : "${joueur.pseudonyme}"</p>
+        <p> Nom du joeur : "${joueur.pseudonyme}"</p>
 
          <c:choose>
             <c:when test="${joueur.elimine}">
@@ -27,7 +27,7 @@
             </c:when>
         </c:choose>
 
-        <p> Role : 
+        <p> Rôle : 
             <c:choose>
             <c:when test="${joueur.roleSt eq 'humain'}">
                 Humain.
@@ -51,7 +51,7 @@
         </c:choose>
         </p>
         <p>
-            Periode : ${periode}  
+            Période : ${periode}  
         </p>
     </div>
 <c:choose>
@@ -129,7 +129,7 @@
                     
                         <input name="exercerSur" type="radio" value="${humain.pseudonyme}">${humain.pseudonyme}
 
-                        </br>
+                        
                 </c:forEach>
                
             </c:when>

@@ -18,7 +18,7 @@
         <h1>les loups-garous vs les humains</h1>
         
         <div class="information">
-            Vous êtes le maitre de jeu
+            <p>Vous êtes le maitre de jeu</p>
         </div>
             
         <br><br>

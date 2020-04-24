@@ -3,7 +3,9 @@ body {
     background-image: url("pics/background_1.png");
     background-size: 2000px;
 }
-
+p{
+    text-align: center;
+}
 h1 {
  
     text-align: center;
@@ -44,6 +46,8 @@ h2{
 
 }
 .container{
+
+        background-color: LightGray;
         position: absolute;
         bottom: 5px;
         right: 5px;
@@ -54,12 +58,15 @@ h2{
         overflow: hidden;
     }
 .chat-container{
+
         height: 400px;
         overflow: auto;
         direction: rtl;
     }
 .message{
-    border-bottom: solid 1px #ccc;
+    border:medium solid;
+    border-bottom: medium solid;
+    border-collapse: collapse;
     padding: 20px;
     direction: ltr;
   }
@@ -87,11 +94,12 @@ button{
   }
 
   form input {
+    border:medium solid;
     font: normal 8pt verdana, helvetica, sans-serif;
     margin: 3px 3px 0px 0px;
     border: 1px #999 solid;
     padding: 10px 95px;
-    background-color: #4CAF50;
+    background-color: white;
 }
 
 form input.Jour {
@@ -135,6 +143,9 @@ form input.sansLabel{
     padding: 10px 20px;
 }
 .information{
+    margin: 0 auto;
+    width: 450px;
+    /* Encadré pour voir les limites du formulaire */
     font-size: 20px;
     font-weight: bold;
     color: #fff;

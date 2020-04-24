@@ -19,7 +19,7 @@
        
            
         <div class="information ">
-        <p> Nom de joeur : "${joueur.pseudonyme}"</p>
+        <p> Nom du joeur : "${joueur.pseudonyme}"</p>
 
          <c:choose>
             <c:when test="${joueur.elimine}">
@@ -27,7 +27,7 @@
             </c:when>
         </c:choose>
 
-        <p> Role : 
+        <p> Rôle : 
             <c:choose>
             <c:when test="${joueur.roleSt eq 'humain'}">
                 Humain.
@@ -51,7 +51,7 @@
         </c:choose>
         </p>
         <p>
-            Periode : ${periode}  
+            Période : ${periode}  
         </p>
     </div>
 <c:choose>
@@ -94,5 +94,49 @@
 </form>
 </div>
 
+        
+<!-- Traitement des pouvoir spéciale --->
+<!-- voyance -->
+<c:if test="${joueur.pouvoirSt eq 'voyance' && periode eq 'Nuit'}">
+    <div class="voyance">
+        <p> 
+            Chaque nuit vous avez le droit de connaitre le role et le pouvoir d'un joueur 
+        </p>
+        <form method="post" action="Jeu">
+             <c:choose>
+            <c:when test="${not exercerPouvoir}">
+                <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
+            </c:when>
+        </c:choose>
+        <input type="hidden" name="action" value="pouvoir"/>
+        </form>
+    </div>
+</c:if>
+
+
+<!-- contamination -->
+<c:if test="${joueur.pouvoirSt eq 'contamination' && periode eq 'Nuit' && joueur.roleSt eq 'loupGarou'}">
+    <div class="contamination">
+        <p> 
+            Chaque nuit vous avez le droit de transformer un humain en un loup Garou
+        </p>
+        <form method="post" action="Jeu">
+             <c:choose>
+            <c:when test="${not exercerPouvoir}">
+                <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
+                <p> Veuillez choisir le joueur à transformer en loup Garou </p>
+                <c:forEach items="${humain}" var="humain">
+                    
+                        <input name="exercerSur" type="radio" value="${humain.pseudonyme}">${humain.pseudonyme}
+
+                        
+                </c:forEach>
+               
+            </c:when>
+        </c:choose>
+        <input type="hidden" name="action" value="pouvoirContamination"/>
+        </form>
+    </div>
+</c:if>
 </body>
 </html>
