@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : jeuMaitre
     Created on : 23 avr. 2020, 18:10:17
     Author     : amalou
@@ -16,11 +16,11 @@
     </head>
     <body>
         <h1>les loups-garous vs les humains</h1>
-        
+
         <div class="information">
-            Vous êtes le maitre de jeu
+            <p>Vous êtes le maitre de jeu</p>
         </div>
-            
+
         <br><br>
         <c:choose>
             <c:when test="${maitrejeu == '1'&& periode eq'Jour'}">
@@ -30,8 +30,8 @@
                 </form>
                 <form method="post" action = "GestionPartie">
                     <input type="submit" value="Jour" class="Jour" disabled/>
-                    <input type="hidden" name="action" value="passeraujour" />    
-                </form> 
+                    <input type="hidden" name="action" value="passeraujour" />
+                </form>
             </c:when>
             <c:when test="${maitrejeu == '1' && periode == 'Nuit'}">
                 <form method="post" action = "GestionPartie">
@@ -40,16 +40,16 @@
                 </form>
                 <form method="post" action = "GestionPartie">
                     <input type="submit" value="Jour" class="Jour" />
-                    <input type="hidden" name="action" value="passeraujour" />    
-                </form> 
+                    <input type="hidden" name="action" value="passeraujour" />
+                </form>
             </c:when>
-        </c:choose>        
+        </c:choose>
         <div class="container">
           <div class="chat-container">
                 <c:forEach items="${messages}" var="message">
                     <div class="message">
                     <div class="datetime">${message.date}</div>
-                    <div class="pseudonyme">${message.nameUtilisateur}</div> 
+                    <div class="pseudonyme">${message.nameUtilisateur}</div>
                     <p>${message.contenu}</p>
                     </div>
                 </c:forEach>
