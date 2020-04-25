@@ -177,30 +177,32 @@ public class PartieDao extends AbstractDataBaseDAO {
             Joueur joueur = null;
             if (rt.next()){
                 joueur = new Joueur(rt.getString("pseudonyme"));
+                PreparedStatement st1 = conn.prepareStatement("select * from Joueur where pseudonyme=?");
+                st.setString(1, joueur.getPseudonyme());
+                ResultSet resultSet = st1.executeQuery();
+                if (resultSet.next()){
+                    if (resultSet.getString("pouvoir").equals("aucun")){
+                        joueur.setPouvoir(Pouvoir.aucun);
+                    } else if (resultSet.getString("pouvoir").equals("voyance")){
+                        joueur.setPouvoir(Pouvoir.voyance);
+                    } else{
+                        joueur.setPouvoir(Pouvoir.contamination);
+                    }
+
+                    if (resultSet.getInt("elimine") == 0){
+                        joueur.setElimine(false);
+                    } else {
+                        joueur.setElimine(true);
+                    }
+
+                    if (resultSet.getString("role").equals("humain")){
+                        joueur.setRole(Role.humain);
+                    }else {
+                        joueur.setRole(Role.loupGarou);
+                    }
+                }
             }
-            PreparedStatement st1 = conn.prepareStatement("select * from Joueur");
-            ResultSet resultSet = st1.executeQuery();
-            if (resultSet.next()){
-                if (resultSet.getString("pouvoir").equals("aucun")){
-                    joueur.setPouvoir(Pouvoir.aucun);
-                } else if (resultSet.getString("pouvoir").equals("voyance")){
-                    joueur.setPouvoir(Pouvoir.voyance);
-                } else{
-                    joueur.setPouvoir(Pouvoir.contamination);
-                }
-                
-                if (resultSet.getInt("elimine") == 0){
-                    joueur.setElimine(false);
-                } else {
-                    joueur.setElimine(true);
-                }
-                
-                if (resultSet.getString("role").equals("humain")){
-                    joueur.setRole(Role.humain);
-                }else {
-                    joueur.setRole(Role.loupGarou);
-                }
-            }
+            
             return joueur;
         } catch (SQLException ex) {
             throw new DAOException("Erreur BD "  +  ex.getMessage(), ex);
