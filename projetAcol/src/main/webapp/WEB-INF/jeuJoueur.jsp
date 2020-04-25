@@ -77,7 +77,8 @@
                 </form>
     </c:when>
 
-    <c:when test="${not joueur.elimine && periode eq 'Jour'}">
+    <c:when test="${(not joueur.elimine && periode eq 'Jour') ||
+            (not joueur.elimine && periode eq 'Nuit' && joueur.role eq 'loupGarou')}">
                 <form method="post" action = "Jeu">
                     <label>Proposer un villageois : </label> 
                 <select name="villageois">
@@ -96,31 +97,15 @@
                     <input type="hidden" name="action" value="proposer" />
                 </form>
     </c:when>   
-    <c:when test="${not joueur.elimine && periode eq 'Nuit' && joueur.role eq 'loupGarou'}">
-                <form method="post" action = "Jeu">
-                    <label>Proposer un villageois : </label> : 
-                <select name="villageois">
-                    <c:forEach items="${villageois}" var="villageois">
-                    <option value="${villageois.pseudonyme}">${villageois.pseudonyme}</option>
-                    </c:forEach>
-                    <option value="nothing" selected>Choisir un villageois</option>
-                </select>
-                    <c:forEach items="${proposed}" var="proposed">
-                        <c:if test="${proposed.getVote().contains(joueur.pseudonyme)}">
-                            <c:set var = "propose" value = "${proposed.pseudonyme}"/>
-                        </c:if>
-                    </c:forEach>
-                    <input type="submit" value="Valider"/>
-                    <input type="hidden" name="propose" value="${propose}" />
-                    <input type="hidden" name="action" value="proposer" />
-                </form>
-    </c:when>   
+    
 </c:choose>
 
 <br>  
 <br>
 <br>
-        <c:if test="${proposed!=null && proposed.size()!=0}">
+        <c:if test="${((not joueur.elimine && periode eq 'Nuit' && joueur.role eq 'loupGarou')
+                      ||(not joueur.elimine && periode eq 'Jour')) 
+                      && proposed!=null && proposed.size()!=0}">
             <table align="center">
             <tr>
                 <th> Villageois Proposés </th>
