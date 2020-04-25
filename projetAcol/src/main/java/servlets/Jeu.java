@@ -56,6 +56,7 @@ public class Jeu extends HttpServlet {
     public static final String ROLE     = "role";
     public static final String EXERCER_PV     = "exercerPouvoir";
     public static final String HUMAIN     = "humain";
+    public static final String JOUEURS     = "listJoueur";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -107,7 +108,9 @@ public class Jeu extends HttpServlet {
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
                     /** vérifier si le joeur à un pouvoir */
+                    exercerPouvoirVoyance(request,response);
                     exercerPouvoirContamination(request,response);
+                    this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
                    
                 }
                 
@@ -177,6 +180,23 @@ public class Jeu extends HttpServlet {
             request.setAttribute(ATT_PERIODE, partie.getPeriode());
             request.setAttribute(ATT_JOUEUR, joueur);
             exercerPouvoirContamination(request,response);
+            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
+        }
+        if (action.equals("pouvoirVoyance")){
+            
+            messages = messageDao.getListeMessages(partie.getPeriode());
+            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+            Joueur joueur = new Joueur(pseudonyme);
+            JoueurDao joueurdao = new JoueurDao(ds);
+            joueurdao.getInformations(joueur);
+            /** Chercher les informations sur le joueur **/
+
+            request.setAttribute(ATT_MESSAGES, messages);
+            request.setAttribute(ATT_PERIODE, partie.getPeriode());
+            request.setAttribute(ATT_JOUEUR, joueur);
+            
+            exercerPouvoirVoyance(request,response);
+            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
         }
         if (action.equals("proposer")){
             String nameProposed = request.getParameter("villageois");
@@ -192,6 +212,45 @@ public class Jeu extends HttpServlet {
         }
         
     }
+    
+    private void exercerPouvoirVoyance(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+         request.setCharacterEncoding("UTF-8");
+        /* Récupération de la session depuis la requête */
+        HttpSession session = request.getSession();
+        String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+        Joueur joueur = new Joueur(pseudonyme);
+        JoueurDao joueurDao = new JoueurDao(ds);
+        joueurDao.getInformations(joueur);
+        // check if the player had already exercise its power
+        Joueur exercerSur = joueurDao.checkExercerPv(joueur);
+        if (exercerSur == null){
+            request.setAttribute(EXERCER_PV,false);
+            ExercerPouvoirDao exercerPvDao = new ExercerPouvoirDao(ds);
+            List<Joueur> joueurs  =  exercerPvDao.getJoeurs(pseudonyme);
+            request.setAttribute(JOUEURS,joueurs);
+            /** exercer le pouvoir **/
+            String name = request.getParameter("voyance");
+            if (name != null){
+                /** le joueur veut appliqué son pouvoir **/ 
+                ExercerPouvoir exercerPv = new ExercerPouvoir();
+                exercerPv.setExercerPar(pseudonyme);
+                exercerPv.setExercerSur(name);
+                exercerPvDao.appliqueVoyance(exercerPv);
+                request.setAttribute(EXERCER_PV,true);
+                Joueur voyanceAp = new Joueur(name);
+                joueurDao.getInformations(voyanceAp);
+                request.setAttribute("voyanceAp",voyanceAp);
+            }
+        } else {
+            request.setAttribute(EXERCER_PV,true);
+            joueurDao.getInformations(exercerSur);
+            request.setAttribute("voyanceAp",exercerSur);
+            
+        }
+    }
+    
     
     private void exercerPouvoirContamination(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -226,7 +285,6 @@ public class Jeu extends HttpServlet {
                 request.setAttribute("exercerSur",exercerSur.getPseudonyme());
             }
            
-            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
     }
     private void addVote(HttpServletRequest request, 
                          HttpServletResponse response, PartieDao partiedao,

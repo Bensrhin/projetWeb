@@ -50,6 +50,45 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         return humains;
     }
     
+    public List<Joueur> getJoeurs(String name){
+        List<Joueur> joueurs = new ArrayList<Joueur>();
+        try (
+            
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("select * from Joueur where elimine = 0 and pseudonyme != ?");) {
+            st.setString(1, name);
+            ResultSet resultSet = st.executeQuery();
+            while (resultSet.next()){
+                Joueur player = new Joueur(resultSet.getString("pseudonyme"));
+                joueurs.add(player);
+            }
+            
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+        
+        return joueurs;
+    }
+    
+    public void appliqueVoyance(ExercerPouvoir exercerPv){
+        
+        String par = exercerPv.getExercerPar();
+        String sur = exercerPv.getExercerSur();
+        
+        try (
+            
+            Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("insert into ExercerPouvoir (exercerPar,exercerSur) values (?,?)");) {
+            st.setString(1, par);
+            st.setString(2, sur);
+            st.executeQuery();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
+    
     
     public void appliqueContamination(ExercerPouvoir exercerPv){
         

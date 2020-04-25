@@ -176,7 +176,7 @@
 
 <!-- Traitement des pouvoir spéciale --->
 <!-- voyance -->
-<c:if test="${joueur.pouvoirSt eq 'voyance' && periode eq 'Nuit'}">
+<c:if test="${joueur.pouvoirSt eq 'voyance' && periode eq 'Nuit' &&  not joueur.elimine}">
     <div class="voyance">
         <p>
             Chaque nuit vous avez le droit de connaitre le role et le pouvoir d'un joueur
@@ -185,16 +185,32 @@
              <c:choose>
             <c:when test="${not exercerPouvoir}">
                 <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
+                <p>
+                <label for="voyance">Veuillez choisir le joueur que vous voulez savoir ses informations:</label>
+                <select name="voyance" id="voyance">
+                     <c:forEach items="${listJoueur}" var="listJoueur">
+                         <option value="${listJoueur.pseudonyme}">${listJoueur.pseudonyme}</option>
+                    </c:forEach>
+
+                </select>
+            </p>
+            <input type="submit" name="bouton" value="regerder les informations de ce joueur">
+            </c:when>
+            <c:when test="${exercerPouvoir}">
+                <p> Vous avez déja exercer votre pouvoir sur ${voyanceAp.pseudonyme}, 
+                son role est ${voyanceAp.roleSt} , son pouvoir est : ${voyanceAp.pouvoirSt} </p>
+
             </c:when>
         </c:choose>
-        <input type="hidden" name="action" value="pouvoir"/>
+        <input type="hidden" name="action" value="pouvoirVoyance"/>
         </form>
     </div>
 </c:if>
 
 
 <!-- contamination -->
-<c:if test="${joueur.pouvoirSt eq 'contamination' && periode eq 'Nuit' && joueur.roleSt eq 'loupGarou'}">
+<c:if test="${joueur.pouvoirSt eq 'contamination' && periode eq 'Nuit' 
+              && joueur.roleSt eq 'loupGarou' &&  not joueur.elimine}">
     <div class="contamination">
         <p>
             Chaque nuit vous avez le droit de transformer un humain en un loup Garou
