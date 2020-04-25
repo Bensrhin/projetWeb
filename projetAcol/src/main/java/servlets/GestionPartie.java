@@ -97,7 +97,7 @@ public class GestionPartie extends HttpServlet {
                 }
             }
             if (eliminer != null){
-                Joueur removed = partiedao.changeStatut(eliminer);
+                partiedao.changeStatut(eliminer);
                 partiedao.viderProposed();
                 
             }

@@ -54,10 +54,21 @@
         <p>
             Période : ${periode}
         </p>
-    </div>
+        </div>
             
-<br>
-<br>
+        <br>
+        <br>
+        
+        <c:if test="${mort!=null}">
+            <div class="new-death">
+                <h3>"${mort.pseudonyme}" est trouvé mort.</h3>
+                
+            </div>
+        </c:if>
+
+              
+        <br>
+        <br>
 <c:choose>
     <c:when test="${joueur.elimine}">
                 <form method="post" action = "Jeu">
@@ -109,7 +120,8 @@
 <br>  
 <br>
 <br>
-<table align="center">
+        <c:if test="${proposed!=null && proposed.size()!=0}">
+            <table align="center">
             <tr>
                 <th> Villageois Proposés </th>
                 <th> Ractifier la proposition </th>
@@ -125,6 +137,8 @@
             
 
         </table>
+        </c:if>
+        
 
 
 

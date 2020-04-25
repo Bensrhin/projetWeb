@@ -149,13 +149,37 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
-    public Joueur changeStatut(String removed){
+    public void changeStatut(String removed){
+        try (
+            /* changer le statut de l'utilisateur*/
+            Connection conn = getConn();
+            PreparedStatement st1 = conn.prepareStatement("Update joueur set elimine=1 where pseudonyme=?");){ 
+            st1.setString(1, removed);
+            st1.executeUpdate();
+            /* vider la table du joueur tué*/
+            PreparedStatement st2 = conn.prepareStatement
+            ("delete from Proposed");  
+            st2.executeUpdate();
+            /* ajouter le nouveau mort*/
+            PreparedStatement st3 = conn.prepareStatement("insert into Removed (pseudonyme) values (?)");
+            st3.setString(1, removed);
+            st3.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DAOException("Erreur BD "  +  ex.getMessage(), ex);
+        }
+
+    }
+    public Joueur nouveauMort(){
         try (
             Connection conn = getConn();  
-            PreparedStatement st = conn.prepareStatement("Select * from joueur where pseudonyme=?");) {
-            st.setString(1, removed);
-            ResultSet resultSet = st.executeQuery();
-            Joueur joueur = new Joueur(removed);
+            PreparedStatement st = conn.prepareStatement("select * from removed");) {
+            ResultSet rt = st.executeQuery();
+            Joueur joueur = null;
+            if (rt.next()){
+                joueur = new Joueur(rt.getString("pseudonyme"));
+            }
+            PreparedStatement st1 = conn.prepareStatement("select * from Joueur");
+            ResultSet resultSet = st1.executeQuery();
             if (resultSet.next()){
                 if (resultSet.getString("pouvoir").equals("aucun")){
                     joueur.setPouvoir(Pouvoir.aucun);
@@ -164,26 +188,23 @@ public class PartieDao extends AbstractDataBaseDAO {
                 } else{
                     joueur.setPouvoir(Pouvoir.contamination);
                 }
+                
                 if (resultSet.getInt("elimine") == 0){
                     joueur.setElimine(false);
                 } else {
                     joueur.setElimine(true);
                 }
+                
                 if (resultSet.getString("role").equals("humain")){
                     joueur.setRole(Role.humain);
                 }else {
                     joueur.setRole(Role.loupGarou);
                 }
             }
-            //Connection conn = getConn();  
-            PreparedStatement st2 = conn.prepareStatement("Update joueur set elimine=1 where pseudonyme=?"); 
-            st2.setString(1, removed);
-            st2.executeUpdate(); 
             return joueur;
         } catch (SQLException ex) {
-            Logger.getLogger(PartieDao.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DAOException("Erreur BD "  +  ex.getMessage(), ex);
         }
-        return null;
     }
     public void passerPeriode(String periode, Partie partie){
         /*modifier la periode*/

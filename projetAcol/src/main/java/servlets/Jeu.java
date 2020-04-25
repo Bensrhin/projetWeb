@@ -79,7 +79,7 @@ public class Jeu extends HttpServlet {
         partiedao.partieEnCours(partie);
         List<Proposed> proposed = partiedao.getProposed();
         request.setAttribute("proposed", proposed);
-        
+        Joueur mort = partiedao.nouveauMort();
         if (action == null){
            
             if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
@@ -102,7 +102,7 @@ public class Jeu extends HttpServlet {
                     this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
                 }
                 else{
-         
+                    request.setAttribute("mort", mort);
                     request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");

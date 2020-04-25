@@ -45,6 +45,11 @@ create table Proposed (
     primary key(pseudonyme, voter)
 
 );
+create table Removed (
+    pseudonyme NVARCHAR2(20) not null references Joueur(pseudonyme),
+    primary key(pseudonyme)
+
+);
 create table MessageJour (
     id_MessageJour number(6) default id_MessageJour.nextval,
     datePub NVARCHAR2(40) not null,
