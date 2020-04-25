@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import dao.ExercerPouvoirDao;
+import dao.JoueurDao;
+import dao.MessageDao;
 
 /**
  *
@@ -31,6 +33,7 @@ public class GestionPartie extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
     private DataSource ds;
     public static final String VUE              = "/WEB-INF/jeuMaitre.jsp";
+    public static final String VUE_FIN              = "/WEB-INF/fin.jsp";
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -77,11 +80,21 @@ public class GestionPartie extends HttpServlet {
             /** vider la table de exercer pouvoir **/
             ExercerPouvoirDao exercerPv = new ExercerPouvoirDao(ds);
             exercerPv.videTable();
-            
-
+           
         }
         request.setAttribute("maitrejeu", "1");
-        this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+        JoueurDao joueurdao = new JoueurDao(ds);
+        Boolean finpartie =  joueurdao.finPartie();
+        if(finpartie){
+            String gagant = joueurdao.gagnant();
+            request.setAttribute("gagnant", gagant);
+            request.setAttribute("joueurs", joueurdao.getListeJoueurs());
+            request.setAttribute("messages", (new MessageDao(ds)).getListeMessages("archive"));
+            this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+        }
+        else{
+            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+        }
     }
 
     private void eliminerRactifier(HttpServletRequest request, 

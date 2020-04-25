@@ -233,7 +233,7 @@ public class PartieDao extends AbstractDataBaseDAO {
             ResultSet resultSet = st.executeQuery();
             while(resultSet.next()){
                  try (
-            PreparedStatement st2 = conn.prepareStatement("insert into Archive (datePub,pseudonyme,contenu, periode) values (?,?,?, ?)");) {
+            PreparedStatement st2 = conn.prepareStatement("insert into Archive (datePub,pseudonyme,contenu, periode) values (?,?,?,?)");) {
             st2.setString(1, resultSet.getString("datePub"));
             st2.setString(2, resultSet.getString("pseudonyme"));
             st2.setString(3, resultSet.getString("contenu"));
@@ -254,6 +254,31 @@ public class PartieDao extends AbstractDataBaseDAO {
             st.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
+        }
+    }
+
+    public void deletePartie() {
+        /*supprimer la partie et tous les elements de la partie*/
+        
+        
+        /*Supprimer la partie*/
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Partie");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+        
+        /*Supprimer Removed*/
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Removed");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
 }
