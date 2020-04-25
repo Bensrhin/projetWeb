@@ -45,6 +45,24 @@ h2{
     font-family: 'Muli', sans-serif;
 
 }
+
+table{
+    border:medium solid;
+    border-collapse: collapse;
+    width: 40%;
+    background-color: white;
+}
+th{
+    border:medium solid;
+    background-color: #D0E3FA;
+}
+td{
+    border:medium solid;
+    text-align: center;
+}
+
+
+
 .container{
 
         background-color: LightGray;
@@ -144,7 +162,7 @@ form input.sansLabel{
 }
 .information{
     margin: 0 auto;
-    width: 450px;
+    width: 40%;
     /* Encadré pour voir les limites du formulaire */
     font-size: 20px;
     font-weight: bold;

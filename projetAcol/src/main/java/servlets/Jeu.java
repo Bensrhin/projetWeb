@@ -9,6 +9,7 @@ import beans.Message;
 import beans.Partie;
 import beans.Utilisateur;
 import beans.Joueur;
+import beans.Proposed;
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import dao.DAOException;
 import dao.MessageDao;
@@ -75,8 +76,10 @@ public class Jeu extends HttpServlet {
         Partie partie = new Partie();
         PartieDao partiedao = new PartieDao(ds);
         partiedao.partieEnCours(partie);
+        List<Proposed> proposed = partiedao.getProposed();
+        request.setAttribute("proposed", proposed);
         
-       if (action == null){
+        if (action == null){
            
             if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
                     /* Redirection vers la page publique */
@@ -88,6 +91,7 @@ public class Jeu extends HttpServlet {
                 Joueur joueur = new Joueur(pseudonyme);
                 JoueurDao joueurdao = new JoueurDao(ds);
                 joueurdao.getInformations(joueur);
+                List<Joueur> villageois = joueurdao.getListeJoueursVivants(joueur);
                 /** Chercher les informations sur le joueur **/
                 
                 request.setAttribute(ATT_MESSAGES, messages);
@@ -97,14 +101,29 @@ public class Jeu extends HttpServlet {
                     this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
                 }
                 else{
+         
+                    request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
                     this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
                 }
                 
                 }
-            }
             
+            }
+        else{
+            if (session.getAttribute(ATT_SESSION_USER)==null){
+                this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+            }
+            if (action.equals("addVote")){
+                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                String pseudo = request.getParameter("id");
+                addVote(request, response, partiedao, proposed, pseudo, voter);
+                action = null;
+                response.sendRedirect("/projetAcol/Jeu");
+            }
+            //response.sendRedirect("/projetAcol/Jeu");
+        }
     }
 
     /**
@@ -146,6 +165,18 @@ public class Jeu extends HttpServlet {
         if (action.equals("pouvoirContamination")){
             exercerPouvoirContamination(request,response);
         }
+        if (action.equals("proposer")){
+            String nameProposed = request.getParameter("villageois");
+            if (!nameProposed.equals("nothing")){
+                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                if (request.getParameter("propose")!=null){
+                    partiedao.retirerVote(request.getParameter("propose"), voter);
+                }
+                partiedao.proposerVillageois(nameProposed, voter);
+            }
+            
+            response.sendRedirect("/projetAcol/Jeu");
+        }
         
     }
     
@@ -171,7 +202,27 @@ public class Jeu extends HttpServlet {
             }
             this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
     }
+    private void addVote(HttpServletRequest request, 
+                         HttpServletResponse response, PartieDao partiedao,
+                         List<Proposed> proposed, String pseudo, String voter) 
+            throws ServletException, IOException {
+            for (Proposed joueur:proposed){
 
+                if (joueur.getVote().contains(voter)){
+                    if (!joueur.getPseudonyme().equals(pseudo)){
+
+                        partiedao.retirerVote(joueur.getPseudonyme(), voter);
+                    }
+                }
+                else{
+                    if (joueur.getPseudonyme().equals(pseudo)){
+
+                        partiedao.proposerVillageois(pseudo, voter);
+                    }
+                }
+            }
+            
+    }
     /**
      * Returns a short description of the servlet.
      *
@@ -181,5 +232,6 @@ public class Jeu extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
 }

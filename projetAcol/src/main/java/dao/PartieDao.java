@@ -9,6 +9,7 @@ package dao;
  *
  * @author nadir
  */
+import beans.Joueur;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import beans.Partie;
+import beans.Pouvoir;
+import beans.Proposed;
+import beans.Role;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PartieDao extends AbstractDataBaseDAO {
 
@@ -55,6 +65,62 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
+    public void proposerVillageois(String pseudo, String voter){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("insert into Proposed (pseudonyme,voter) values (?,?)");) {
+            st.setString(1, pseudo);
+            st.setString(2, voter);   
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
+    public void retirerVote(String pseudo, String voter){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Proposed where pseudonyme=? and voter=?");) {
+            st.setString(1, pseudo);
+            st.setString(2, voter);   
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
+    public List<Proposed> getProposed(){
+        List<Proposed> result = new ArrayList<>();
+        try (
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+                ("SELECT * FROM PROPOSED");
+	     ) {
+            Map<String, List<String>> map = new HashMap<>();
+            
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                List<String> list = map.get(rs.getString("pseudonyme"));
+                if (list != null){
+                    list.add(rs.getString("voter"));
+                }
+                else{
+                    list = new ArrayList<>();
+                    list.add(rs.getString("voter"));
+                }
+                map.put(rs.getString("pseudonyme"), list);
+            }
+            Set<String> keys = map.keySet();
+            for (String pseudo:keys){
+                Proposed proposed = new Proposed(pseudo);
+                proposed.addVote(map.get(pseudo));
+                result.add(proposed);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
     public boolean partieEnCours(Partie partie){
         try (
             Connection conn = getConn();  
@@ -73,7 +139,52 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
-
+    public void viderProposed(){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Proposed");) {   
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
+    public Joueur changeStatut(String removed){
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement("Select * from joueur where pseudonyme=?");) {
+            st.setString(1, removed);
+            ResultSet resultSet = st.executeQuery();
+            Joueur joueur = new Joueur(removed);
+            if (resultSet.next()){
+                if (resultSet.getString("pouvoir").equals("aucun")){
+                    joueur.setPouvoir(Pouvoir.aucun);
+                } else if (resultSet.getString("pouvoir").equals("voyance")){
+                    joueur.setPouvoir(Pouvoir.voyance);
+                } else{
+                    joueur.setPouvoir(Pouvoir.contamination);
+                }
+                if (resultSet.getInt("elimine") == 0){
+                    joueur.setElimine(false);
+                } else {
+                    joueur.setElimine(true);
+                }
+                if (resultSet.getString("role").equals("humain")){
+                    joueur.setRole(Role.humain);
+                }else {
+                    joueur.setRole(Role.loupGarou);
+                }
+            }
+            //Connection conn = getConn();  
+            PreparedStatement st2 = conn.prepareStatement("Update joueur set elimine=1 where pseudonyme=?"); 
+            st2.setString(1, removed);
+            st2.executeUpdate(); 
+            return joueur;
+        } catch (SQLException ex) {
+            Logger.getLogger(PartieDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     public void passerPeriode(String periode, Partie partie){
         /*modifier la periode*/
         try (

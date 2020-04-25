@@ -57,6 +57,35 @@ public class JoueurDao extends AbstractDataBaseDAO{
         }
     }
     
+    
+    
+    public List<Joueur> getListeJoueursVivants(Joueur joueur){
+        List<Joueur> result = new ArrayList<>();
+        try (
+            
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+             /** selon la période **/
+                ("SELECT * FROM JOUEUR WHERE elimine=0 and pseudonyme not in (select pseudonyme from PROPOSED)");
+	     ) {
+
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Joueur jou = new Joueur(rs.getString("pseudonyme"));
+                result.add(jou);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }
+    
+    
+    
+    
+    
+    
+    
     public void getInformations(Joueur joueur){
         try (
             Connection conn = getConn();

@@ -5,10 +5,13 @@
  */
 package servlets;
 
+import beans.Joueur;
 import beans.Partie;
+import beans.Proposed;
 import dao.PartieDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -57,18 +60,41 @@ public class GestionPartie extends HttpServlet {
         PartieDao partiedao = new PartieDao(ds);
         Partie partie = new Partie();
         partiedao.partieEnCours(partie);
+        List<Proposed> proposed = partiedao.getProposed();
+        request.setAttribute("proposed", proposed);
         if(action.equals("passernuit")){
             partiedao.passerPeriode("Nuit", partie);
             request.setAttribute("periode", "Nuit");
+            eliminerRactifier(request, response, partiedao, proposed);
         }
         if(action.equals("passeraujour")){
             partiedao.passerPeriode("Jour", partie);
             request.setAttribute("periode", "Jour");
+            eliminerRactifier(request, response, partiedao, proposed);
         }
         request.setAttribute("maitrejeu", "1");
         this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }
 
+    private void eliminerRactifier(HttpServletRequest request, 
+                         HttpServletResponse response, PartieDao partiedao,
+                         List<Proposed> proposed) 
+            throws ServletException, IOException {
+            int max = 0;
+            String eliminer = null;
+            for (Proposed joueur:proposed){
+                if (joueur.getNbVote() > max){
+                    max = joueur.getNbVote();
+                    eliminer = joueur.getPseudonyme();
+                }
+            }
+            if (eliminer != null){
+                Joueur removed = partiedao.changeStatut(eliminer);
+                partiedao.viderProposed();
+                
+            }
+            
+    }
     /**
      * Returns a short description of the servlet.
      *

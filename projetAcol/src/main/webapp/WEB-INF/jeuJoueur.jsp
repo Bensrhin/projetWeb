@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="beans.Joueur" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -54,15 +55,75 @@
             Période : ${periode}  
         </p>
     </div>
+            
+<br>
+<br>
 <c:choose>
     <c:when test="${joueur.elimine}">
                 <form method="post" action = "Jeu">
                     <input type="submit" value="Acceder au archive" class="Nuit"/>
                     <input type="hidden" name="action" value="archive" />
                 </form>
-    </c:when>       
+    </c:when>
+    <c:when test="${not joueur.elimine && periode eq 'Jour'}">
+                <form method="post" action = "Jeu">
+                    <label>Proposer un villageois : </label> : 
+                <select name="villageois">
+                    <c:forEach items="${villageois}" var="villageois">
+                    <option value="${villageois.pseudonyme}">${villageois.pseudonyme}</option>
+                    </c:forEach>
+                    <option value="nothing" selected>Choisir un villageois</option>
+                </select>
+                    <c:forEach items="${proposed}" var="proposed">
+                        <c:if test="${proposed.getVote().contains(joueur.pseudonyme)}">
+                            <c:set var = "propose" value = "${proposed.pseudonyme}"/>
+                        </c:if>
+                    </c:forEach>
+                    <input type="submit" value="Valider"/>
+                    <input type="hidden" name="propose" value="${propose}" />
+                    <input type="hidden" name="action" value="proposer" />
+                </form>
+    </c:when>   
+    <c:when test="${not joueur.elimine && periode eq 'Nuit' && joueur.role eq 'loupGarou'}">
+                <form method="post" action = "Jeu">
+                    <label>Proposer un villageois : </label> : 
+                <select name="villageois">
+                    <c:forEach items="${villageois}" var="villageois">
+                    <option value="${villageois.pseudonyme}">${villageois.pseudonyme}</option>
+                    </c:forEach>
+                    <option value="nothing" selected>Choisir un villageois</option>
+                </select>
+                    <c:forEach items="${proposed}" var="proposed">
+                        <c:if test="${proposed.getVote().contains(joueur.pseudonyme)}">
+                            <c:set var = "propose" value = "${proposed.pseudonyme}"/>
+                        </c:if>
+                    </c:forEach>
+                    <input type="submit" value="Valider"/>
+                    <input type="hidden" name="propose" value="${propose}" />
+                    <input type="hidden" name="action" value="proposer" />
+                </form>
+    </c:when>   
 </c:choose>
-           
+
+<br>  
+<br>
+<br>
+<table align="center">
+            <tr>
+                <th> Villageois Proposés </th>
+                <th> Ractifier la proposition </th>
+                <th> Nombre de votes </th>
+            </tr>
+            <c:forEach items="${proposed}" var="proposed">
+            <tr>
+                <td> ${proposed.pseudonyme} </td>
+                <td><a href="Jeu?action=addVote&&id=${proposed.pseudonyme}">voter</a></td>
+                <td> ${proposed.getNbVote()} </td>
+            </tr>
+            </c:forEach>
+            
+
+        </table>
 <div class="container">
   <div class="chat-container">
         <c:choose>
