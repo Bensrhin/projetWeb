@@ -178,7 +178,7 @@ public class PartieDao extends AbstractDataBaseDAO {
             if (rt.next()){
                 joueur = new Joueur(rt.getString("pseudonyme"));
                 PreparedStatement st1 = conn.prepareStatement("select * from Joueur where pseudonyme=?");
-                st.setString(1, joueur.getPseudonyme());
+                st1.setString(1, joueur.getPseudonyme());
                 ResultSet resultSet = st1.executeQuery();
                 if (resultSet.next()){
                     if (resultSet.getString("pouvoir").equals("aucun")){

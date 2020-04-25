@@ -79,7 +79,7 @@
 
     <c:when test="${not joueur.elimine && periode eq 'Jour'}">
                 <form method="post" action = "Jeu">
-                    <label>Proposer un villageois : </label> : 
+                    <label>Proposer un villageois : </label> 
                 <select name="villageois">
                     <c:forEach items="${villageois}" var="villageois">
                     <option value="${villageois.pseudonyme}">${villageois.pseudonyme}</option>
