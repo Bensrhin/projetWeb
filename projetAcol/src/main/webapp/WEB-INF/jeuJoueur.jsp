@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : Jeu
     Created on : 20-Apr-2020, 19:16:55
     Author     : benjelloun
@@ -13,12 +13,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link type="text/css" rel="stylesheet" href="style_2.css" />
-        <title>Jeu</title>    
+        <title>Jeu</title>
     </head>
     <body>
         <h1>les loups-garous vs les humains</h1>
-       
-           
+
+
         <div class="information ">
         <p> Nom du joeur : "${joueur.pseudonyme}"</p>
 
@@ -28,7 +28,7 @@
             </c:when>
         </c:choose>
 
-        <p> Rôle : 
+        <p> Rôle :
             <c:choose>
             <c:when test="${joueur.roleSt eq 'humain'}">
                 Humain.
@@ -38,7 +38,7 @@
             </c:when>
         </c:choose>
         </p>
-        <p> Pouvoir : 
+        <p> Pouvoir :
             <c:choose>
             <c:when test="${joueur.pouvoirSt eq 'voyance'}">
                 Voyance
@@ -52,7 +52,7 @@
         </c:choose>
         </p>
         <p>
-            Période : ${periode}  
+            Période : ${periode}
         </p>
     </div>
             
@@ -65,6 +65,7 @@
                     <input type="hidden" name="action" value="archive" />
                 </form>
     </c:when>
+
     <c:when test="${not joueur.elimine && periode eq 'Jour'}">
                 <form method="post" action = "Jeu">
                     <label>Proposer un villageois : </label> : 
@@ -124,6 +125,9 @@
             
 
         </table>
+
+
+
 <div class="container">
   <div class="chat-container">
         <c:choose>
@@ -131,7 +135,7 @@
                 <c:forEach items="${messages}" var="message">
                     <div class="message">
                     <div class="datetime">${message.date}</div>
-                    <div class="pseudonyme">${message.nameUtilisateur}</div> 
+                    <div class="pseudonyme">${message.nameUtilisateur}</div>
                     <p>${message.contenu}</p>
                     </div>
                 </c:forEach>
@@ -155,13 +159,13 @@
 </form>
 </div>
 
-        
+
 <!-- Traitement des pouvoir spéciale --->
 <!-- voyance -->
 <c:if test="${joueur.pouvoirSt eq 'voyance' && periode eq 'Nuit'}">
     <div class="voyance">
-        <p> 
-            Chaque nuit vous avez le droit de connaitre le role et le pouvoir d'un joueur 
+        <p>
+            Chaque nuit vous avez le droit de connaitre le role et le pouvoir d'un joueur
         </p>
         <form method="post" action="Jeu">
              <c:choose>
@@ -178,23 +182,31 @@
 <!-- contamination -->
 <c:if test="${joueur.pouvoirSt eq 'contamination' && periode eq 'Nuit' && joueur.roleSt eq 'loupGarou'}">
     <div class="contamination">
-        <p> 
+        <p>
             Chaque nuit vous avez le droit de transformer un humain en un loup Garou
         </p>
         <form method="post" action="Jeu">
              <c:choose>
             <c:when test="${not exercerPouvoir}">
                 <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
-                <p> Veuillez choisir le joueur à transformer en loup Garou </p>
-                <c:forEach items="${humain}" var="humain">
-                    
-                        <input name="exercerSur" type="radio" value="${humain.pseudonyme}">${humain.pseudonyme}
+                <p>
+                <label for="contamine">Veuillez choisir le joueur à transformer en loup Garou:</label>
+                <select name="contamine" id="contamine">
+                     <c:forEach items="${humain}" var="humain">
+                         <option value="${humain.pseudonyme}">${humain.pseudonyme}</option>
+                    </c:forEach>
 
-                        
-                </c:forEach>
-               
+                </select>
+            </p>
+            <input type="submit" name="bouton" value="Contaminé cet humain">
+            </c:when>
+            
+            <c:when test="${exercerPouvoir}">
+                <p> Vous avez déja exercer votre pouvoir sur ${exercerSur} </p>
+
             </c:when>
         </c:choose>
+
         <input type="hidden" name="action" value="pouvoirContamination"/>
         </form>
     </div>

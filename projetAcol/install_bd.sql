@@ -72,8 +72,8 @@ create table Archive (
 /* Une table qui permet de stocker les noms des joueurs qui ont déja exercer
     leur pouvoir pendant la nuit */
 create table ExercerPouvoir(
-    exercerPar NVARCHAR2(20) not null references Joueur(pseudonyme),
-    exercerSur NVARCHAR2(20) not null references Joueur(pseudonyme),
+    exercerPar NVARCHAR2(20) not null references Utilisateur(pseudonyme),
+    exercerSur NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     primary key(exercerPar)
 );
 /* peupler la base de donnée*/

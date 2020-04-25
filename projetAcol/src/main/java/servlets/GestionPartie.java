@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import dao.ExercerPouvoirDao;
 
 /**
  *
@@ -70,7 +71,14 @@ public class GestionPartie extends HttpServlet {
         if(action.equals("passeraujour")){
             partiedao.passerPeriode("Jour", partie);
             request.setAttribute("periode", "Jour");
+
             eliminerRactifier(request, response, partiedao, proposed);
+
+            /** vider la table de exercer pouvoir **/
+            ExercerPouvoirDao exercerPv = new ExercerPouvoirDao(ds);
+            exercerPv.videTable();
+            
+
         }
         request.setAttribute("maitrejeu", "1");
         this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
