@@ -70,4 +70,32 @@ public class MessageDao extends AbstractDataBaseDAO{
     }
     return result;
     }
+
+    public void deleteMessages() {
+            /* supprimer Messages*/
+    try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from archive");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+        try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from MessageJour");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from MessageNuit");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
 }

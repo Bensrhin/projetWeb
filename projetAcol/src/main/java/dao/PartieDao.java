@@ -280,5 +280,14 @@ public class PartieDao extends AbstractDataBaseDAO {
         } catch (SQLException e) {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
+    /* supprimer Proposed*/
+    try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Proposed");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
     }
 }

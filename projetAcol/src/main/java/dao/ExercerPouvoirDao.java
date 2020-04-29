@@ -132,5 +132,16 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         }
         
     }
+
+    public void deletePouvoirs() {
+            try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from ExercerPouvoir");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
     
 }

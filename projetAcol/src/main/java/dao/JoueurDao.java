@@ -223,5 +223,17 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	} 
 }
+
+    public void deleteJoueurs() {
+            /* supprimer Joueurs*/
+    try (
+            Connection conn = getConn();  
+            PreparedStatement st = conn.prepareStatement
+            ("delete from Joueur");) {
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD "  +  e.getMessage(), e);
+        }
+    }
   
 }

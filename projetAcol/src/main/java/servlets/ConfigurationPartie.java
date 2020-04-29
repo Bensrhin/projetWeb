@@ -26,6 +26,8 @@ import dao.UtilisateurDao;
 import java.io.*;
 import java.util.List;
 import beans.Joueur;
+import dao.ExercerPouvoirDao;
+import dao.MessageDao;
 import java.util.ArrayList;
 
 
@@ -77,10 +79,14 @@ public class ConfigurationPartie extends HttpServlet {
                     //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
                      this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
                 } else {
+                    /* delete joueurs and messages belong to previous partie*/
+                    (new MessageDao(ds)).deleteMessages();
+                    (new JoueurDao(ds)).deleteJoueurs();
+                    (new ExercerPouvoirDao(ds)).deletePouvoirs();
                     Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
                     assert(maitre != null);
                     List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
-                    List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
+                    List<Utilisateur> notAdded = new ArrayList<>();
                     for (Utilisateur user : utilisateurs){
                         if (!this.userAjouter.contains(user.getNom())){
                             notAdded.add(user);
@@ -88,6 +94,7 @@ public class ConfigurationPartie extends HttpServlet {
                     }
 
                     request.setAttribute("utilisateur", notAdded);
+                    
                     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
                 } 
             } else if (action.equals("addUser")){
