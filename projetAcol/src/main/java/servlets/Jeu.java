@@ -107,6 +107,7 @@ public class Jeu extends HttpServlet {
                         request.setAttribute("gagnant", gagant);
                         request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                         request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
+                        partiedao.deletePartie();
                         this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
                     }
                     else{
@@ -128,6 +129,7 @@ public class Jeu extends HttpServlet {
                         //partiedao.deletePartie();
                         request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
                         request.setAttribute("joueurs", joueurdao.getListeJoueurs());
+                        partiedao.deletePartie();
                         this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
                     }
                     else{

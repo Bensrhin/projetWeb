@@ -90,6 +90,7 @@ public class GestionPartie extends HttpServlet {
             request.setAttribute("gagnant", gagant);
             request.setAttribute("joueurs", joueurdao.getListeJoueurs());
             request.setAttribute("messages", (new MessageDao(ds)).getListeMessages("archive"));
+            partiedao.deletePartie();
             this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
         }
         else{
