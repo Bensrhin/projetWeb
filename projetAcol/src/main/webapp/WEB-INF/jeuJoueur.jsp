@@ -69,6 +69,24 @@
               
         <br>
         <br>
+ 
+        <div class="ListJoueurs ">
+        <u><p>Liste des joueurs </p></u>
+        <c:forEach items="${joueurs}" var="joueur">
+        <c:choose>
+        <c:when test="${joueur.elimine}">
+        <del>
+            <p>${joueur.pseudonyme} (eliminer) </p>
+        </del>
+        </c:when>
+        <c:otherwise>
+            <p>${joueur.pseudonyme}</p>
+        </c:otherwise>
+        </c:choose>
+        </c:forEach>
+        </div>
+
+
 <c:choose>
     <c:when test="${joueur.elimine}">
                 <form method="post" action = "Jeu">
@@ -92,7 +110,7 @@
                             <c:set var = "propose" value = "${proposed.pseudonyme}"/>
                         </c:if>
                     </c:forEach>
-                    <input type="submit" value="Valider"/>
+                    <input type="submit" value="Valider" class="valider"/>
                     <input type="hidden" name="propose" value="${propose}" />
                     <input type="hidden" name="action" value="proposer" />
                 </form>
@@ -106,7 +124,7 @@
         <c:if test="${((not joueur.elimine && periode eq 'Nuit' && joueur.role eq 'loupGarou')
                       ||(not joueur.elimine && periode eq 'Jour')) 
                       && proposed!=null && proposed.size()!=0}">
-            <table align="center">
+            <table>
             <tr>
                 <th> Villageois Proposés </th>
                 <th> Ractifier la proposition </th>

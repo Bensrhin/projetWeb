@@ -96,7 +96,7 @@ public class Jeu extends HttpServlet {
                 joueurdao.getInformations(joueur);
                 List<Joueur> villageois = joueurdao.getListeJoueursVivants(joueur);
                 /** Chercher les informations sur le joueur **/
-                
+                request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                 request.setAttribute(ATT_MESSAGES, messages);
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
                 if(maitre != null){
@@ -105,7 +105,6 @@ public class Jeu extends HttpServlet {
                     if(finpartie){
                         String gagant = joueurdao.gagnant();
                         request.setAttribute("gagnant", gagant);
-                        request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                         request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
                         partiedao.deletePartie();
                         this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
@@ -119,6 +118,7 @@ public class Jeu extends HttpServlet {
                     request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
+                    request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                     /** vérifier si le joueur à un pouvoir */
                     exercerPouvoirVoyance(request,response);
                     exercerPouvoirContamination(request,response);
@@ -128,7 +128,6 @@ public class Jeu extends HttpServlet {
                         request.setAttribute("gagnant", gagant);
                         //partiedao.deletePartie();
                         request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
-                        request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                         partiedao.deletePartie();
                         this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
                     }
