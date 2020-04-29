@@ -52,6 +52,7 @@ public class Jeu extends HttpServlet {
     public static final String VUE_JOUEUR              = "/WEB-INF/jeuJoueur.jsp";
     public static final String VUE_ARCHIVE              = "/WEB-INF/jeuArchive.jsp";
     public static final String VUE_MAITRE             = "/WEB-INF/jeuMaitre.jsp";
+    public static final String VUE_FIN             = "/WEB-INF/fin.jsp";
     public static final String ACCES_PUBLIC     = "/WEB-INF/connexion.jsp";
     public static final String ROLE     = "role";
     public static final String EXERCER_PV     = "exercerPouvoir";
@@ -100,17 +101,38 @@ public class Jeu extends HttpServlet {
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
                 if(maitre != null){
                     request.setAttribute(ATT_MAITRE, "1");
-                    this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
+                    Boolean finpartie =  joueurdao.finPartie();
+                    if(finpartie){
+                        String gagant = joueurdao.gagnant();
+                        request.setAttribute("gagnant", gagant);
+                        request.setAttribute("joueurs", joueurdao.getListeJoueurs());
+                        request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
+                        this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+                    }
+                    else{
+                        this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
+                    }
                 }
                 else{
                     request.setAttribute("mort", mort);
                     request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");
-                    /** vérifier si le joeur à un pouvoir */
+                    /** vérifier si le joueur à un pouvoir */
                     exercerPouvoirVoyance(request,response);
                     exercerPouvoirContamination(request,response);
-                    this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
+                    Boolean finpartie =  joueurdao.finPartie();
+                    if(finpartie){
+                        String gagant = joueurdao.gagnant();
+                        request.setAttribute("gagnant", gagant);
+                        //partiedao.deletePartie();
+                        request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
+                        request.setAttribute("joueurs", joueurdao.getListeJoueurs());
+                        this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+                    }
+                    else{
+                        this.getServletContext().getRequestDispatcher( VUE_JOUEUR ).forward( request, response );
+                    }
                    
                 }
                 

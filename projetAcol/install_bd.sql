@@ -71,6 +71,7 @@ create table Archive (
     datePub NVARCHAR2(40) not null,
     pseudonyme NVARCHAR2(20) not null references Utilisateur(pseudonyme),
     contenu NVARCHAR2(2000) not null,
+    periode NVARCHAR2(10) not null check (periode in ('Jour', 'Nuit')),
     primary key(id_Archive)
 );
 

@@ -80,7 +80,54 @@ public class JoueurDao extends AbstractDataBaseDAO{
 	return result;
     }
     
-    
+    public List<Joueur> getListeJoueurs(){
+        List<Joueur> result = new ArrayList<>();
+        try (
+            
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+                ("SELECT * FROM JOUEUR");
+	     ) {
+
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Joueur jou = new Joueur(rs.getString("pseudonyme"));
+                
+                String r = rs.getString("role");
+                Role role;
+                if(r.equals("humain")){
+                    role = Role.humain; 
+                }
+                else{
+                    role = Role.loupGarou;
+                }
+                jou.setRole(role);
+                String p = rs.getString("pouvoir");
+                Pouvoir pouvoir;
+                if(p.equals("aucun")){
+                    pouvoir = Pouvoir.aucun; 
+                }
+                else if(p.equals("voyance")){
+                    pouvoir = Pouvoir.voyance;
+                }
+                else{
+                    pouvoir = Pouvoir.contamination;
+                }
+                jou.setRole(role);
+                jou.setPouvoir(pouvoir);
+                if(rs.getInt("elimine") == 1){
+                    jou.setElimine(true);
+                }
+                else{
+                    jou.setElimine(false);
+                }
+                result.add(jou);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+	return result;
+    }    
     
     
     
@@ -138,4 +185,43 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+
+    public Boolean finPartie() {
+        try (
+	     Connection conn = getConn();
+             PreparedStatement st = conn.prepareStatement
+                ("SELECT * FROM JOUEUR WHERE elimine=0");
+	     ) {
+            ResultSet rs = st.executeQuery();
+            String role = "humain";
+            if(rs.next()){
+               role = rs.getString("role");
+            }
+            while (rs.next()) {
+               if(!rs.getString("role").equals(role)){
+                   return false;
+               }
+            }
+            return true;
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	}
+    }
+
+  public String gagnant(){
+        assert(this.finPartie());
+        try (
+	    Connection conn = getConn();
+            PreparedStatement st = conn.prepareStatement
+            ("SELECT * FROM JOUEUR WHERE elimine=0");
+	    ) {
+            ResultSet rs = st.executeQuery();
+            rs.next();
+            return rs.getString("role");
+            
+        } catch (SQLException e) {
+            throw new DAOException("Erreur BD " + e.getMessage(), e);
+	} 
+}
+  
 }
