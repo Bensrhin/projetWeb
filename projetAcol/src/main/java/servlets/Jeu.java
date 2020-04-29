@@ -177,11 +177,14 @@ public class Jeu extends HttpServlet {
         if(action.equals("SendMess")){
            String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
            String contenu = request.getParameter("contenu");
-           Date date = new Date();
-           SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
-           String dateString = sdf.format(date);
-           Message m = new Message(dateString, pseudoName, contenu, partie.getPeriode());
-           messageDao.addMessage(m, partie.getPeriode());
+           System.err.println("contenu = "+ contenu);
+           if(!contenu.equals("")){
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
+            String dateString = sdf.format(date);
+            Message m = new Message(dateString, pseudoName, contenu, partie.getPeriode());
+            messageDao.addMessage(m, partie.getPeriode());
+           }
            messages = messageDao.getListeMessages(partie.getPeriode());
            request.setAttribute(ATT_MESSAGES, messages);
            response.sendRedirect("/projetAcol/Jeu");
