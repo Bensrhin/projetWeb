@@ -78,9 +78,9 @@ td{
 
         background-color: LightGray;
         position: absolute;
-        bottom: 5px;
-        right: 5px;
-        width :20%;
+        bottom: 0.3%;
+        right: 0.3%;
+        width :25%;
         margin: 0 auto;
         border: solid 1px #ccc;
         border-radius: 5px;
@@ -96,7 +96,7 @@ td{
     border:medium solid;
     border-bottom: medium solid;
     border-collapse: collapse;
-    padding: 20px;
+    padding: 5%;
     direction: ltr;
   }
 .avatar{
@@ -113,7 +113,7 @@ td{
     }
 .send-message-form input{
     width :100%;
-    right: 10px;
+    right: 2%;
     border :none;
     font-size :16px;
     padding :10px;
@@ -168,12 +168,19 @@ box-shadow: 0 9px #999;
 form input.sansLabel{
     background-color: #4CAF50;
     position: absolute;
-    right: 0px;
-    padding: 10px 20px;
+    right: 0.2%;
+    padding: 10px 10px;
 }
 form input.valider{
     background-color: #4CAF50;
     position: absolute;
+    padding: 0.3% 1%;
+}
+
+form input.Deconnexion{
+    background-color: #4CAF50;
+    position: absolute;
+    right : 0.3%;
     padding: 0.3% 1%;
 }
 .information{
