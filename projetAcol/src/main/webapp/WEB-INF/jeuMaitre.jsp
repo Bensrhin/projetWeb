@@ -16,7 +16,11 @@
     </head>
     <body>
         <h1>les loups-garous vs les humains</h1>
-
+        <form method="post" action="Deconnexion">
+            <input type="submit" value="Deconnexion" class="Deconnexion" />
+            <span class="erreur">${form.erreurs['Deconnexion']}</span>
+            <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
+        </form>
         <div class="information">
             <p>Vous êtes le maitre de jeu</p>
             <p>Période : "${periode}"</p>
