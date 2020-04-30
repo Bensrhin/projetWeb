@@ -65,11 +65,17 @@ public class ConfigurationPartie extends HttpServlet {
     }
 
     /**
-     * 
+     * Handles the HTTP <code>GET</code> method.
+     *  Redirection vers la page d'inscription ou vérification de l'expiration de la session.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
      */
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         /* Affichage de la page de configuration */
-        /** Affichage des utilisateur en lignes dans la pages **/
+       
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
@@ -79,30 +85,32 @@ public class ConfigurationPartie extends HttpServlet {
             if (action == null) {
                 
                 if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
-                    /* Redirection vers la page publique */
-                    //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+                    /* Redirection vers la page publique  si la session est expiré*/
                      this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
                 } else {
-                    /* delete joueurs and messages belong to previous partie*/
-                    (new MessageDao(ds)).deleteMessages();
-                    (new JoueurDao(ds)).deleteJoueurs();
-                    (new ExercerPouvoirDao(ds)).deletePouvoirs();
+                   
+                    /* récuperer le nom du maitre de jeu */
                     Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
                     assert(maitre != null);
+                    /** Récuperer la liste des utilisateur de l'application **/
                     List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
+                    
+                    /** vérifier les utilisateurs non encore ajouté àla partie **/
                     List<Utilisateur> notAdded = new ArrayList<>();
                     for (Utilisateur user : utilisateurs){
                         if (!this.userAjouter.contains(user.getNom())){
                             notAdded.add(user);
                          }
                     }
-
+                    
+                    /** mise à jours de la liste des utilisateurs non encore ajouté à la partie de jeu **/
                     request.setAttribute("utilisateur", notAdded);
                     
                     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
                 } 
             } else if (action.equals("addUser")){
                 
+                /**ajouté un utilisateur à la partie de jeu **/
                 actionAddUser(request, response, userDao);
                
             }
@@ -112,7 +120,16 @@ public class ConfigurationPartie extends HttpServlet {
         
         
     }
-
+    
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         /* Préparation de l'objet formulaire */
       
@@ -129,22 +146,21 @@ public class ConfigurationPartie extends HttpServlet {
                 UtilisateurDao userDao = new UtilisateurDao(ds);
                 JoueurDao joueursDao = new JoueurDao(ds);
                
-                this.partie = partieform.configurerPartie(request, partieDao, this.joueurs, joueursDao);
+                /** configurer et créer une partie de jeu **/
+                this.partie = partieform.configurerPartie(request, partieDao, this.joueurs, joueursDao, ds);
                 /* Stockage du formulaire et du bean dans l'objet request */
                 request.setAttribute(ATT_FORM, partieform);
                 request.setAttribute(ATT_PARTIE, partie);
-                
-                /**
-                 * ancienne version
-                 
-                joueurs.addJoueurs(this.joueurs);
-                **/
+               
                 if ( partieform.getErreurs().isEmpty() ) {
+                    /* cas où la partie est créé avec succès */
+                    /** retour à la pge principale **/
                     String redirectURL = "/projetAcol/restriction";
                     response.sendRedirect(redirectURL);
                 } else {
-                    this.joueurs.clear();
-                    this.userAjouter.clear();
+                    /** la configuration de la partie a échoué */
+                    this.joueurs.clear(); // réinitialiser les joueurs ajouté à la partie
+                    this.userAjouter.clear(); 
                     List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom()); 
                     List<Utilisateur> notAdded = new ArrayList<Utilisateur>();
                     for (Utilisateur user : utilisateurs){
@@ -152,6 +168,7 @@ public class ConfigurationPartie extends HttpServlet {
                             notAdded.add(user);
                          }
                     }
+                    /** renvoyer vers la page de configuration de la partie **/
                     request.setAttribute("utilisateur", notAdded);
                     this.getServletContext().getRequestDispatcher("/WEB-INF/partie.jsp").forward(request, response);
                 }
@@ -165,19 +182,23 @@ public class ConfigurationPartie extends HttpServlet {
 
     }
     
+    /**
+     * Ajouté un utilisatuer à la partie
+     */
     public void actionAddUser(HttpServletRequest request, HttpServletResponse response, 
             UtilisateurDao userDao) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        Joueur joueur = new Joueur(name);
-        //ancienne version
-        this.joueurs.add(joueur);
-        this.userAjouter.add(name);
-        //JoueurDao joueurDao = new JoueurDao(ds);
-        //joueurDao.addJoueur(joueur);
         
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         HttpSession session = request.getSession(false);
+        
+        String name = request.getParameter("name");
+        Joueur joueur = new Joueur(name);
+        // ajouter le joueurs à la liste des joueurs existant.
+        this.joueurs.add(joueur);
+        this.userAjouter.add(name);
+        
+        // mis à jours de la liste des utilisateurs 
         Utilisateur maitre = (Utilisateur) session.getAttribute(Connexion.ATT_SESSION_USER);
         List<Utilisateur> utilisateurs = userDao.getListeUtilisateurs(maitre.getNom());
         List<Utilisateur> notAdded = new ArrayList<>();

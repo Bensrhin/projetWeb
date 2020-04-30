@@ -24,6 +24,9 @@ import java.util.Random;
 import beans.Role;
 import beans.Pouvoir;
 import java.lang.Math;
+import dao.MessageDao;
+import dao.ExercerPouvoirDao;
+import javax.sql.DataSource;
 
 public class PartieForm {
     
@@ -46,7 +49,7 @@ public class PartieForm {
     
     
     public Partie configurerPartie( HttpServletRequest request , PartieDao partieDao, 
-            List<Joueur> joueurs, JoueurDao joueurDao) {
+            List<Joueur> joueurs, JoueurDao joueurDao, DataSource ds) {
         
         String maitre = request.getParameter("maitre");
         double probabilite = getValeurChampProbabilite( request, CHAMP_PROBABILITE );
@@ -79,6 +82,10 @@ public class PartieForm {
 
         if ( erreurs.isEmpty() ) {
            
+            /* delete joueurs and messages belong to previous partie*/
+            (new MessageDao(ds)).deleteMessages();
+            (new JoueurDao(ds)).deleteJoueurs();
+            (new ExercerPouvoirDao(ds)).deletePouvoirs();
             partieDao.creerPartie(maitre, probabilite, loupgarou);
             attributionDesRoles(joueurs,loupgarou);
             attributionDesPouvoirs(joueurs,probabilite);

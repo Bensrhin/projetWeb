@@ -1,0 +1,24 @@
+-classpath
+'/home/amalou/.m2/repository/javax/javaee-web-api/7.0/javaee-web-api-7.0.jar:/home/amalou/.m2/repository/jstl/jstl/1.2/jstl-1.2.jar:/home/amalou/.m2/repository/org/jasypt/jasypt/1.8/jasypt-1.8.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2020. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'projetAcol 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/7/docs/api' '/home/amalou/ENSIMAG/2A/s2/projetweb/projetAcol/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'projetAcol 1.0-SNAPSHOT API'

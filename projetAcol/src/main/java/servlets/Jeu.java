@@ -10,7 +10,6 @@ import beans.Partie;
 import beans.Utilisateur;
 import beans.Joueur;
 import beans.Proposed;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import dao.DAOException;
 import dao.MessageDao;
 import dao.PartieDao;
@@ -34,10 +33,14 @@ import java.util.List;
 import java.util.ArrayList;
 import dao.ExercerPouvoirDao;
 import beans.ExercerPouvoir;
+import dao.DAOException;
+
+
 /**
- *
- * @author benjelloun
+ * Contrôleur de jeu
+ * @author Equipe 9
  */
+
 @WebServlet(name = "Jeu", urlPatterns = {"/Jeu"})
 public class Jeu extends HttpServlet {
     @Resource(name = "jdbc/bibliography")
@@ -58,6 +61,23 @@ public class Jeu extends HttpServlet {
     public static final String EXERCER_PV     = "exercerPouvoir";
     public static final String HUMAIN     = "humain";
     public static final String JOUEURS     = "listJoueur";
+    
+    
+    /* pages d'erreurs */
+    private void invalidParameters(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/controleurErreur.jsp").forward(request, response);
+    }
+
+    /** Page d'erreur à afficher en cas d'une erreur de base de données **/
+    private void erreurBD(HttpServletRequest request,
+            HttpServletResponse response, DAOException e)
+            throws ServletException, IOException {
+        e.printStackTrace(); // permet d’avoir le détail de l’erreur dans catalina.out
+        request.setAttribute("erreurMessage", e.getMessage());
+        request.getRequestDispatcher("/WEB-INF/bdErreur.jsp").forward(request, response);
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -72,99 +92,107 @@ public class Jeu extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         /* Récupération de la session depuis la requête */
-        HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-        String maitre = request.getParameter(ATT_MAITRE);
-        MessageDao messageDao = new MessageDao(ds);
-        Partie partie = new Partie();
-        PartieDao partiedao = new PartieDao(ds);
-        partiedao.partieEnCours(partie);
-        List<Proposed> proposed = partiedao.getProposed();
-        request.setAttribute("proposed", proposed);
-        Joueur mort = partiedao.nouveauMort();
-        if (action == null){
-           
-            if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
-                    /* Redirection vers la page publique */
-                    //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
-                     this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
-            } else {
-               
-                List<Message> messages = messageDao.getListeMessages(partie.getPeriode()==null?"archive":partie.getPeriode());
-                String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
-                Joueur joueur = new Joueur(pseudonyme);
-                JoueurDao joueurdao = new JoueurDao(ds);
-                joueurdao.getInformations(joueur);
-                List<Joueur> villageois = joueurdao.getListeJoueursVivants(joueur);
-                /** Chercher les informations sur le joueur **/
-                request.setAttribute("joueurs", joueurdao.getListeJoueurs());
-                request.setAttribute(ATT_MESSAGES, messages);
-                request.setAttribute(ATT_PERIODE, partie.getPeriode());
-                String m = (String) session.getAttribute(ATT_MAITRE);
-                request.setAttribute("mort", mort);
-                if((m!=null && m.equals("1"))){
-                    request.setAttribute(ATT_MAITRE, "1");
-                    session.setAttribute(ATT_MAITRE, "1");
-                    Boolean finpartie =  joueurdao.finPartie();
-                    if(finpartie){
-                        String gagant = joueurdao.gagnant();
-                        request.setAttribute("gagnant", gagant);
-                        request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
-                        partiedao.deletePartie();
-                        this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
-                    }
-                    else{
-                        this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
-                    }
-                }
-                else{
-                    session.setAttribute(ATT_MAITRE, "0");
-                    
-                    request.setAttribute("villageois", villageois);
-                    request.setAttribute(ATT_JOUEUR, joueur);
-                    request.setAttribute(ATT_MAITRE, "0");
+        try{
+            HttpSession session = request.getSession();
+            String action = request.getParameter("action");
+            String maitre = request.getParameter(ATT_MAITRE);
+            MessageDao messageDao = new MessageDao(ds);
+            Partie partie = new Partie();
+            PartieDao partiedao = new PartieDao(ds);
+            partiedao.partieEnCours(partie);
+            List<Proposed> proposed = partiedao.getProposed();
+            request.setAttribute("proposed", proposed);
+            Joueur mort = partiedao.nouveauMort();
+            if (action == null){
+
+                if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
+                        /* Redirection vers la page publique */
+                         this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+                } else {
+
+                    List<Message> messages = messageDao.getListeMessages(partie.getPeriode()==null?"archive":partie.getPeriode());
+                    String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+                    Joueur joueur = new Joueur(pseudonyme);
+                    JoueurDao joueurdao = new JoueurDao(ds);
+                    joueurdao.getInformations(joueur);
+                    List<Joueur> villageois = joueurdao.getListeJoueursVivants(joueur);
+                    /** Chercher les informations sur le joueur **/
                     request.setAttribute("joueurs", joueurdao.getListeJoueurs());
-                    /** vérifier si le joueur à un pouvoir */
-                    exercerPouvoirVoyance(request,response);
-                    exercerPouvoirContamination(request,response);
-                    Boolean finpartie =  joueurdao.finPartie();
-                    if(finpartie){
-                        String gagant = joueurdao.gagnant();
-                        request.setAttribute("gagnant", gagant);
-                        //partiedao.deletePartie();
-                        request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
-                        partiedao.deletePartie();
-                        this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+                    request.setAttribute(ATT_MESSAGES, messages);
+                    request.setAttribute(ATT_PERIODE, partie.getPeriode());
+                    String m = (String) session.getAttribute(ATT_MAITRE);
+                    request.setAttribute("mort", mort);
+                    if((m!=null && m.equals("1"))){
+                            request.setAttribute(ATT_MAITRE, "1");
+                            session.setAttribute(ATT_MAITRE, "1");
+                            Boolean finpartie =  joueurdao.finPartie();
+                            if(finpartie){
+                                String gagant = joueurdao.gagnant();
+                                request.setAttribute("gagnant", gagant);
+                                request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
+                                partiedao.deletePartie();
+                                this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+                            }
+                            else{
+                                // la partie n'est pas encore finie
+                                this.getServletContext().getRequestDispatcher( VUE_MAITRE ).forward( request, response );
+                            }
+                        
+                    } else {
+                            // l'utilisateur n'est pas le maitre de jeu
+                            session.setAttribute(ATT_MAITRE, "0");
+
+                            request.setAttribute("villageois", villageois);
+                            request.setAttribute(ATT_JOUEUR, joueur);
+                            request.setAttribute(ATT_MAITRE, "0");
+                            request.setAttribute("joueurs", joueurdao.getListeJoueurs());
+                            /** vérifier si le joueur à un pouvoir */
+                            exercerPouvoirVoyance(request,response);
+                            exercerPouvoirContamination(request,response);
+                            Boolean finpartie =  joueurdao.finPartie();
+                            if(finpartie){
+                                String gagant = joueurdao.gagnant();
+                                request.setAttribute("gagnant", gagant);
+                                request.setAttribute(ATT_MESSAGES, messageDao.getListeMessages("archive"));
+                                partiedao.deletePartie();
+                                // si la partie est finie redirection vers la fin de jeu
+                                this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
+                            
+                            } else {
+                                // sinon vers la page de joueur
+                                this.getServletContext().getRequestDispatcher( VUE_JOUEUR ).forward( request, response );
+                            }
+
+                        }
+
                     }
-                    else{
-                        this.getServletContext().getRequestDispatcher( VUE_JOUEUR ).forward( request, response );
-                    }
-                   
+
+                
+            } else {
+                
+                if (session.getAttribute(ATT_SESSION_USER)==null){
+                    this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
+                }
+                if (action.equals("addVote")){
+                    String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                    String pseudo = request.getParameter("id");
+                    addVote(request, response, partiedao, proposed, pseudo, voter);
+                    action = null;
+                    response.sendRedirect("/projetAcol/Jeu");
+                
+                } else if (action.equals("removeVote")){
+                    String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                    String pseudo = request.getParameter("id");
+                    partiedao.retirerVote(pseudo, voter);
+                    action = null;
+                    response.sendRedirect("/projetAcol/Jeu");
                 }
                 
-                }
-            
             }
-        else{
-            if (session.getAttribute(ATT_SESSION_USER)==null){
-                this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
-            }
-            if (action.equals("addVote")){
-                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
-                String pseudo = request.getParameter("id");
-                addVote(request, response, partiedao, proposed, pseudo, voter);
-                action = null;
-                response.sendRedirect("/projetAcol/Jeu");
-            }
-            else if (action.equals("removeVote")){
-                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
-                String pseudo = request.getParameter("id");
-                partiedao.retirerVote(pseudo, voter);
-                action = null;
-                response.sendRedirect("/projetAcol/Jeu");
-            }
-            //response.sendRedirect("/projetAcol/Jeu");
+        } catch (DAOException e){
+            erreurBD(request, response, e);
         }
+        
     }
 
     /**
@@ -180,120 +208,146 @@ public class Jeu extends HttpServlet {
             throws ServletException, IOException {
                 request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
-        HttpSession session = request.getSession();
-        MessageDao messageDao = new MessageDao(ds);
-        Partie partie = new Partie();
-        PartieDao partiedao = new PartieDao(ds);
-        partiedao.partieEnCours(partie);
-        List<Message> messages;
-        if(action.equals("SendMess")){
-           String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
-           String contenu = request.getParameter("contenu");
-           if(!contenu.equals("")){
-            Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
-            String dateString = sdf.format(date);
-            Message m = new Message(dateString, pseudoName, contenu, partie.getPeriode());
-            messageDao.addMessage(m, partie.getPeriode());
+        try {
+            
+            HttpSession session = request.getSession();
+            MessageDao messageDao = new MessageDao(ds);
+            Partie partie = new Partie();
+            PartieDao partiedao = new PartieDao(ds);
+            partiedao.partieEnCours(partie);
+            List<Message> messages;
+            
+            /** si l'utilisateur veut envoyer un message **/
+            if(action.equals("SendMess")){
+               String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+               String contenu = request.getParameter("contenu");
+               if(!contenu.equals("")){
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
+                String dateString = sdf.format(date);
+                Message m = new Message(dateString, pseudoName, contenu, partie.getPeriode());
+                messageDao.addMessage(m, partie.getPeriode());
+               }
+               messages = messageDao.getListeMessages(partie.getPeriode());
+               request.setAttribute(ATT_MESSAGES, messages);
+               response.sendRedirect("/projetAcol/Jeu");
            }
-           messages = messageDao.getListeMessages(partie.getPeriode());
-           request.setAttribute(ATT_MESSAGES, messages);
-           response.sendRedirect("/projetAcol/Jeu");
-       }
-        if(action.equals("archive")){
-            messages = messageDao.getListeMessages("archive");
-            request.setAttribute(ATT_MESSAGES, messages);
-            this.getServletContext().getRequestDispatcher( VUE_ARCHIVE).forward( request, response );
-        }
-        if (action.equals("pouvoirContamination")){
-            messages = messageDao.getListeMessages(partie.getPeriode());
-            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
-            Joueur joueur = new Joueur(pseudonyme);
-            JoueurDao joueurdao = new JoueurDao(ds);
-            joueurdao.getInformations(joueur);
-            /** Chercher les informations sur le joueur **/
-
-            request.setAttribute(ATT_MESSAGES, messages);
-            request.setAttribute(ATT_PERIODE, partie.getPeriode());
-            request.setAttribute(ATT_JOUEUR, joueur);
-            exercerPouvoirContamination(request,response);
-            response.sendRedirect("/projetAcol/Jeu");
-            //this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
-        }
-        if (action.equals("pouvoirVoyance")){
-            
-            messages = messageDao.getListeMessages(partie.getPeriode());
-            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
-            Joueur joueur = new Joueur(pseudonyme);
-            JoueurDao joueurdao = new JoueurDao(ds);
-            joueurdao.getInformations(joueur);
-            /** Chercher les informations sur le joueur **/
-
-            request.setAttribute(ATT_MESSAGES, messages);
-            request.setAttribute(ATT_PERIODE, partie.getPeriode());
-            request.setAttribute(ATT_JOUEUR, joueur);
-            
-            exercerPouvoirVoyance(request,response);
-            response.sendRedirect("/projetAcol/Jeu");
-            //this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
-        }
-        if (action.equals("proposer")){
-            String nameProposed = request.getParameter("villageois");
-            if (!nameProposed.equals("nothing")){
-                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
-                if (request.getParameter("propose")!=null){
-                    partiedao.retirerVote(request.getParameter("propose"), voter);
-                }
-                partiedao.proposerVillageois(nameProposed, voter);
+            /** si le joueur est éliminé **/
+            if(action.equals("archive")){
+                messages = messageDao.getListeMessages("archive");
+                request.setAttribute(ATT_MESSAGES, messages);
+                this.getServletContext().getRequestDispatcher( VUE_ARCHIVE).forward( request, response );
             }
+            /** si le joueur possède un pouvoir de contamination **/
+            if (action.equals("pouvoirContamination")){
+                messages = messageDao.getListeMessages(partie.getPeriode());
+                String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+                Joueur joueur = new Joueur(pseudonyme);
+                JoueurDao joueurdao = new JoueurDao(ds);
+                joueurdao.getInformations(joueur);
+                /** Chercher les informations sur le joueur **/
+
+                request.setAttribute(ATT_MESSAGES, messages);
+                request.setAttribute(ATT_PERIODE, partie.getPeriode());
+                request.setAttribute(ATT_JOUEUR, joueur);
+                exercerPouvoirContamination(request,response);
+                response.sendRedirect("/projetAcol/Jeu");
+               
+            }
+            /** si le joueur possède un pouvoir de voyance **/
+            if (action.equals("pouvoirVoyance")){
+
+                messages = messageDao.getListeMessages(partie.getPeriode());
+                String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+                Joueur joueur = new Joueur(pseudonyme);
+                JoueurDao joueurdao = new JoueurDao(ds);
+                joueurdao.getInformations(joueur);
+                /** Chercher les informations sur le joueur **/
+
+                request.setAttribute(ATT_MESSAGES, messages);
+                request.setAttribute(ATT_PERIODE, partie.getPeriode());
+                request.setAttribute(ATT_JOUEUR, joueur);
+
+                exercerPouvoirVoyance(request,response);
+                response.sendRedirect("/projetAcol/Jeu");
+                
+            }
+            /** si le joueur propose un vote **/
             
-            response.sendRedirect("/projetAcol/Jeu");
+            if (action.equals("proposer")){
+                String nameProposed = request.getParameter("villageois");
+                if (!nameProposed.equals("nothing")){
+                    String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                    if (request.getParameter("propose")!=null){
+                        partiedao.retirerVote(request.getParameter("propose"), voter);
+                    }
+                    partiedao.proposerVillageois(nameProposed, voter);
+                }
+
+                response.sendRedirect("/projetAcol/Jeu");
+            }
+        
+        
+        } catch (DAOException e){
+            erreurBD(request, response, e);
         }
         
     }
     
+    /**
+     * Gérer l'utilisation de pouvoir de voyance.
+     */
     private void exercerPouvoirVoyance(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         
-         request.setCharacterEncoding("UTF-8");
-        /* Récupération de la session depuis la requête */
-        HttpSession session = request.getSession();
-        String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
-        Joueur joueur = new Joueur(pseudonyme);
-        JoueurDao joueurDao = new JoueurDao(ds);
-        joueurDao.getInformations(joueur);
-        // check if the player had already exercise its power
-        Joueur exercerSur = joueurDao.checkExercerPv(joueur);
-        if (exercerSur == null){
-            request.setAttribute(EXERCER_PV,false);
-            ExercerPouvoirDao exercerPvDao = new ExercerPouvoirDao(ds);
-            List<Joueur> joueurs  =  exercerPvDao.getJoeurs(pseudonyme);
-            request.setAttribute(JOUEURS,joueurs);
-            /** exercer le pouvoir **/
-            String name = request.getParameter("voyance");
-            if (name != null){
-                /** le joueur veut appliqué son pouvoir **/ 
-                ExercerPouvoir exercerPv = new ExercerPouvoir();
-                exercerPv.setExercerPar(pseudonyme);
-                exercerPv.setExercerSur(name);
-                exercerPvDao.appliqueVoyance(exercerPv);
+        try {
+            /* Récupération de la session depuis la requête */
+            HttpSession session = request.getSession();
+            String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
+            Joueur joueur = new Joueur(pseudonyme);
+            JoueurDao joueurDao = new JoueurDao(ds);
+            joueurDao.getInformations(joueur);
+            // check if the player had already exercise its power
+            Joueur exercerSur = joueurDao.checkExercerPv(joueur);
+            if (exercerSur == null){
+                request.setAttribute(EXERCER_PV,false);
+                ExercerPouvoirDao exercerPvDao = new ExercerPouvoirDao(ds);
+                List<Joueur> joueurs  =  exercerPvDao.getJoeurs(pseudonyme);
+                request.setAttribute(JOUEURS,joueurs);
+                /** exercer le pouvoir **/
+                String name = request.getParameter("voyance");
+                if (name != null){
+                    /** le joueur veut appliqué son pouvoir **/ 
+                    ExercerPouvoir exercerPv = new ExercerPouvoir();
+                    exercerPv.setExercerPar(pseudonyme);
+                    exercerPv.setExercerSur(name);
+                    exercerPvDao.appliqueVoyance(exercerPv);
+                    request.setAttribute(EXERCER_PV,true);
+                    Joueur voyanceAp = new Joueur(name);
+                    joueurDao.getInformations(voyanceAp);
+                    request.setAttribute("voyanceAp",voyanceAp);
+                }
+            } else {
                 request.setAttribute(EXERCER_PV,true);
-                Joueur voyanceAp = new Joueur(name);
-                joueurDao.getInformations(voyanceAp);
-                request.setAttribute("voyanceAp",voyanceAp);
+                joueurDao.getInformations(exercerSur);
+                request.setAttribute("voyanceAp",exercerSur);
+
             }
-        } else {
-            request.setAttribute(EXERCER_PV,true);
-            joueurDao.getInformations(exercerSur);
-            request.setAttribute("voyanceAp",exercerSur);
             
+        } catch (DAOException e){
+            erreurBD(request, response, e);
         }
     }
     
-    
+    /**
+     * Gérer l'utilisation de pouvoir de contamination.
+     */
     private void exercerPouvoirContamination(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        try {
+            
             request.setCharacterEncoding("UTF-8");
             /* Récupération de la session depuis la requête */
             HttpSession session = request.getSession();
@@ -323,27 +377,39 @@ public class Jeu extends HttpServlet {
                 request.setAttribute(EXERCER_PV,true);
                 request.setAttribute("exercerSur",exercerSur.getPseudonyme());
             }
+            
+        } catch (DAOException e){
+            erreurBD(request, response, e);
+        }
            
     }
+    
+    /**
+     * Ajouter un vote
+     */
     private void addVote(HttpServletRequest request, 
                          HttpServletResponse response, PartieDao partiedao,
                          List<Proposed> proposed, String pseudo, String voter) 
             throws ServletException, IOException {
-            for (Proposed joueur:proposed){
+        try {
+                for (Proposed joueur:proposed){
 
-                if (joueur.getVote().contains(voter)){
-                    if (!joueur.getPseudonyme().equals(pseudo)){
+                    if (joueur.getVote().contains(voter)){
+                        if (!joueur.getPseudonyme().equals(pseudo)){
 
-                        partiedao.retirerVote(joueur.getPseudonyme(), voter);
+                            partiedao.retirerVote(joueur.getPseudonyme(), voter);
+                        }
+                    }
+                    else{
+                        if (joueur.getPseudonyme().equals(pseudo)){
+
+                            partiedao.proposerVillageois(pseudo, voter);
+                        }
                     }
                 }
-                else{
-                    if (joueur.getPseudonyme().equals(pseudo)){
-
-                        partiedao.proposerVillageois(pseudo, voter);
-                    }
-                }
-            }
+            } catch (DAOException e){
+            erreurBD(request, response, e);
+        }
             
     }
     /**

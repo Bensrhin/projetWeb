@@ -43,6 +43,8 @@ public class Restriction extends HttpServlet {
     public static final String ATT_PARTIE_C = "partieC";
     public static final String ATT_PARTICIPE = "participe";
     public static final String ATT_MAITRE = "maitrejeu";
+    
+    
     private void erreurBD(HttpServletRequest request,
                 HttpServletResponse response, DAOException e)
             throws ServletException, IOException {
@@ -63,10 +65,9 @@ public class Restriction extends HttpServlet {
          */
         if ( session.getAttribute( ATT_SESSION_USER ) == null ) {
             /* Redirection vers la page publique */
-            //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
+            
             this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
-        } else 
-            {
+        } else {
                 /* Affichage de la page restreinte */
                 /* verification d'une partie en cours */
                 PartieDao partieDao = new PartieDao(ds);
@@ -81,17 +82,14 @@ public class Restriction extends HttpServlet {
                              boolean maitrePartie = utilisateurdao.maitrePartie(Name);
                              if(participe){
                                  request.setAttribute(ATT_PARTICIPE, "1");
-                             }
-                             else{
+                             } else {
                                  request.setAttribute(ATT_PARTICIPE, "0");
                                  request.setAttribute("nombre", partie.getNbJoueurs());
-                             }
-                             if(maitrePartie){
+                             }if(maitrePartie){
                                  request.setAttribute(ATT_MAITRE, "1");
                                  session.setAttribute(ATT_MAITRE, "1");
                                  System.err.println("maitre = 1 " );
-                             }
-                             else{
+                             }else{
                                  request.setAttribute(ATT_MAITRE, "0");
                                  session.setAttribute(ATT_MAITRE, "0");
                              }
@@ -103,12 +101,9 @@ public class Restriction extends HttpServlet {
                         System.err.println("participe = " + request.getAttribute(ATT_PARTICIPE));
                         request.setAttribute(ATT_PARTIE_C,partie);
                         this.getServletContext().getRequestDispatcher( ACCES_RESTREINT ).forward( request, response );
-                     }
-                catch (DAOException e)
-                    {
+                     } catch (DAOException e) {
                           erreurBD(request,response,e);
                      }
-           
             }
     }
 }

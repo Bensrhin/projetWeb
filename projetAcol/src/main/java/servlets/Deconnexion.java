@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import listener.SessionTrack;
 import static servlets.Connexion.ATT_SESSION_USER;
 import static servlets.Connexion.VUE;
 
 /**
- *
- * @author benjelloun
+ *  Déconnexion de l'utilisateur
+ * 
+ * @author Equipe 9
  */
 @WebServlet(name = "Deconnexion", urlPatterns = {"/Deconnexion"})
 public class Deconnexion extends HttpServlet {
@@ -64,9 +64,7 @@ public class Deconnexion extends HttpServlet {
         HttpSession session = request.getSession();
         request.setAttribute( ATT_USER, null );
         session.setAttribute( ATT_SESSION_USER, null );
-        SessionTrack.decreaseNumberOfUsersOnline();
-        int online  = SessionTrack.getNumberOfUsersOnline();
-        request.setAttribute("onlineUsers", online);
+       
         /** go to restriction **/
         response.sendRedirect("/projetAcol/restriction");
         

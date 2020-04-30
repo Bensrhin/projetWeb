@@ -22,8 +22,8 @@ import dao.UtilisateurDao;
 import dao.DAOException;
 
 /**
- *
- * @author amalou
+ * contrôleur de l'inscription d'un utilisateur
+ * @author Equipe 9
  */
 @WebServlet(name = "Inscription", urlPatterns = {"/inscription"})
 public class Inscription extends HttpServlet {
