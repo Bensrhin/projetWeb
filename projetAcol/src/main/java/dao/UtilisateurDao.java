@@ -7,15 +7,13 @@ package dao;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import beans.Utilisateur;
-import java.math.BigInteger;  
-import java.nio.charset.StandardCharsets; 
 import java.security.MessageDigest;  
 import java.security.NoSuchAlgorithmException;
 
@@ -26,6 +24,12 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         super(ds);
     }
     
+    /**
+     *  Cette méthode insert les données de l'utilisateur au cours de l'enregistrement.
+     * @param pseudonyme
+     * @param password
+     * @param email
+     */
     public void creerUtilisateur(String pseudonyme,String password, String email){
         try(
                 Connection conn = getConn();
@@ -64,6 +68,11 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         }
     }
     
+    /**
+     * elle vérifie s'il existe un utilisateur avec le même email fourni
+     * @param email
+     * @return boolean indiquant l'etat de cette recherche
+     */
     public boolean verifyUniqueEmail(String email){
         try (
                 Connection conn = getConn();
@@ -72,17 +81,17 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
             ){
             st.setString(1,email);
             ResultSet resultSet = st.executeQuery();
-            if (resultSet.next()){
-                return true;
-            } else {
-                return false;
-            }
+            return resultSet.next();
         } catch (SQLException e){
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
     
-    
+    /**
+     *  Vérification de l'utilisateur connecté s'il est déjà en base de donnée
+     * @param user
+     * @return true si le pseudo et le password sont corrects.
+     */
     public boolean connexion(Utilisateur user){
         String pseudonyme = user.getNom();
         String motDePasse = user.getMotDePasse();
@@ -111,6 +120,11 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         }
     }
     
+    /**
+     * vérification du bon format du password
+     * @param password
+     * @return
+     */
     public String hashPassword(String password){
         String generatedPass = null;
         try {
@@ -130,6 +144,11 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
         return generatedPass;
     }
     
+    /**
+     * Elle affiche les utilisateur qui n'appartiennent à aucune partie.
+     * @param maitre
+     * @return listes des utilisateurs qui ne sont pas des joueurs
+     */
     public List<Utilisateur> getListeUtilisateurs(String maitre){
          List<Utilisateur> result = new ArrayList<Utilisateur>();
         try (
@@ -152,24 +171,31 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
 	}
 	return result;
     }
-        public boolean participePartie(String Name){
-        try (
-            Connection conn = getConn();  
-            PreparedStatement st = conn.prepareStatement
-            ("select * from Joueur where pseudonyme = ?");) {
-            st.setString(1, Name);
-            ResultSet rs = st.executeQuery();
-            if(rs.next()){
-                return true;
-            }
-            else{
-                return false;
-            }
-        } catch (SQLException e) {
+
+    /**
+     *  Vérification si un joueur appartient à une partie
+     * @param Name
+     * @return un boolean indiquant l'etat d'appartenance.
+     */
+    public boolean participePartie(String Name){
+    try (
+        Connection conn = getConn();  
+        PreparedStatement st = conn.prepareStatement
+        ("select * from Joueur where pseudonyme = ?");) {
+        st.setString(1, Name);
+        ResultSet rs = st.executeQuery();
+        return rs.next();
+        }
+        catch (SQLException e) {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
 
+    /**
+     *  Vérification du nom du maître du jeu
+     * @param Name
+     * @return true si Name est bien le pseudo du maître
+     */
     public boolean maitrePartie(String Name) {
                 try (
             Connection conn = getConn();  
@@ -177,12 +203,7 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
             ("select maitre from Partie where maitre = ?");) {
             st.setString(1, Name);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return rs.next();
         } catch (SQLException e) {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
