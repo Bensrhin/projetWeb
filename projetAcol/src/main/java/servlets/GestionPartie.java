@@ -10,7 +10,6 @@ import beans.Partie;
 import beans.Proposed;
 import dao.PartieDao;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;

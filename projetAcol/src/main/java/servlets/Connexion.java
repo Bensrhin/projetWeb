@@ -6,16 +6,11 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.*;
-import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 import beans.Utilisateur;
 import dao.UtilisateurDao;
 import forms.ConnexionForm;
