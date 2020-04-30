@@ -214,9 +214,7 @@ form input.Deconnexion{
     color: #fff;
     background-image: url("pics/loupgarou_humain.jpg");
     background-repeat:no-repeat;
-    background-position: center center;
-    //border: 1px solid #fff;
-    //padding: 5px 15px;   
+    background-position: center center; 
 }
 
 .button {
