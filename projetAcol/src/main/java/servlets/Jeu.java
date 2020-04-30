@@ -190,6 +190,7 @@ public class Jeu extends HttpServlet {
            }
            messages = messageDao.getListeMessages(partie.getPeriode());
            request.setAttribute(ATT_MESSAGES, messages);
+           response.sendRedirect("/projetAcol/Jeu");
        }
         if(action.equals("archive")){
             messages = messageDao.getListeMessages("archive");
