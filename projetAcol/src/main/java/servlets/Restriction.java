@@ -30,6 +30,7 @@ import forms.ConnexionForm;
 import dao.DAOException;
 import dao.PartieDao;
 import beans.Partie;
+import static servlets.Connexion.ATT_SESSION_USER;
 
 //@WebServlet(name = "restriction", urlPatterns = {"/restriction"})
 public class Restriction extends HttpServlet {
@@ -55,7 +56,7 @@ public class Restriction extends HttpServlet {
         /* Récupération de la session depuis la requête */
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-
+        
         /*
          * Si l'objet utilisateur n'existe pas dans la session en cours, alors
          * l'utilisateur n'est pas connecté.
@@ -87,10 +88,12 @@ public class Restriction extends HttpServlet {
                              }
                              if(maitrePartie){
                                  request.setAttribute(ATT_MAITRE, "1");
+                                 session.setAttribute(ATT_MAITRE, "1");
                                  System.err.println("maitre = 1 " );
                              }
                              else{
                                  request.setAttribute(ATT_MAITRE, "0");
+                                 session.setAttribute(ATT_MAITRE, "0");
                              }
                         } else {
                             request.setAttribute(ATT_PARTIE,"0");
