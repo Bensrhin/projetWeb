@@ -66,14 +66,13 @@
         </c:forEach>
         
         
-        
+        <div class="notification">
         <c:if test="${mort!=null}">
             <div class="new-death">
-                <h3>"${mort.pseudonyme}" est trouvé mort.</h3>
-                
+                <h3>Urgent !!! <mark>"${mort.pseudonyme}"</mark> est trouvé(e) mort(e).</h3>
             </div>
         </c:if>
-
+        </div>
               
         <br>
         <br>

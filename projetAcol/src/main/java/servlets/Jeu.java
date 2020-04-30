@@ -101,6 +101,7 @@ public class Jeu extends HttpServlet {
                 request.setAttribute(ATT_MESSAGES, messages);
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
                 String m = (String) session.getAttribute(ATT_MAITRE);
+                request.setAttribute("mort", mort);
                 if((m!=null && m.equals("1"))){
                     request.setAttribute(ATT_MAITRE, "1");
                     session.setAttribute(ATT_MAITRE, "1");
@@ -118,7 +119,7 @@ public class Jeu extends HttpServlet {
                 }
                 else{
                     session.setAttribute(ATT_MAITRE, "0");
-                    request.setAttribute("mort", mort);
+                    
                     request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
                     request.setAttribute(ATT_MAITRE, "0");

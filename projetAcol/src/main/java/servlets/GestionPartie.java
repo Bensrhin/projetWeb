@@ -68,6 +68,8 @@ public class GestionPartie extends HttpServlet {
         partiedao.partieEnCours(partie);
         List<Proposed> proposed = partiedao.getProposed();
         request.setAttribute("proposed", proposed);
+        Joueur mort = partiedao.nouveauMort();
+        request.setAttribute("mort", mort);
         if(action.equals("passernuit")){
             partiedao.passerPeriode("Nuit", partie);
             request.setAttribute("periode", "Nuit");
