@@ -52,10 +52,14 @@ public class PartieDao extends AbstractDataBaseDAO {
         }
         
     }
-    public int nbJoueurs(){
+    public int nbJoueurs(boolean onlyLoup){
+        String statement = "select count(*) from joueur where elimine = 0 and role=" + "\'loupGarou\'";
+        if (!onlyLoup){
+            statement = "select count(*) from joueur where elimine = 0";
+        }
         try (
             Connection conn = getConn();  
-            PreparedStatement st = conn.prepareStatement("select count(*) from joueur where elimine = 0");) {
+            PreparedStatement st = conn.prepareStatement(statement);) {
             ResultSet resultSet = st.executeQuery();
             if (resultSet.next()){
                  return resultSet.getInt(1);
@@ -129,7 +133,7 @@ public class PartieDao extends AbstractDataBaseDAO {
             if (resultSet.next()){
                  partie.setMaitre(resultSet.getString("maitre"));
                  partie.setPeriode(resultSet.getString("periode"));
-                 partie.setNbJoueurs(nbJoueurs());
+                 partie.setNbJoueurs(nbJoueurs(false));
                 return true;
             } else {
                 return false;
@@ -158,7 +162,7 @@ public class PartieDao extends AbstractDataBaseDAO {
             st1.executeUpdate();
             /* vider la table du joueur tué*/
             PreparedStatement st2 = conn.prepareStatement
-            ("delete from Proposed");  
+            ("delete from Removed");  
             st2.executeUpdate();
             /* ajouter le nouveau mort*/
             PreparedStatement st3 = conn.prepareStatement("insert into Removed (pseudonyme) values (?)");

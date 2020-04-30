@@ -47,9 +47,10 @@ h2{
 }
 
 table{
+    margin: 0 auto;
     border:medium solid;
     border-collapse: collapse;
-    width: 25%;
+    width: 90%;
     background-color: white;
 }
 th{
@@ -60,8 +61,16 @@ td{
     border:medium solid;
     text-align: center;
 }
-
-
+.same {
+  width: 68%;
+  display: flex;
+}
+.item {
+  width : 80%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: auto;
+}
 
 .container{
 
@@ -178,7 +187,7 @@ form input.valider{
 }
 .ListJoueurs{
     margin: 0 auto;
-    width: 15%;
+    width: 100%;
     /* Encadré pour voir les limites du formulaire */
     font-size: 20px;
     font-weight: bold;
@@ -186,8 +195,8 @@ form input.valider{
     background-image: url("pics/loupgarou_humain.jpg");
     background-repeat:no-repeat;
     background-position: center center;
-    border: 1px solid #fff;
-    padding: 5px 15px;   
+    //border: 1px solid #fff;
+    //padding: 5px 15px;   
 }
 
 .button {

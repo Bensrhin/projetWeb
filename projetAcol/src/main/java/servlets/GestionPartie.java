@@ -63,19 +63,20 @@ public class GestionPartie extends HttpServlet {
         HttpSession session = request.getSession();
         PartieDao partiedao = new PartieDao(ds);
         Partie partie = new Partie();
+        JoueurDao joueurdao = new JoueurDao(ds);
+        request.setAttribute("joueurs", joueurdao.getListeJoueurs());
         partiedao.partieEnCours(partie);
         List<Proposed> proposed = partiedao.getProposed();
         request.setAttribute("proposed", proposed);
         if(action.equals("passernuit")){
             partiedao.passerPeriode("Nuit", partie);
             request.setAttribute("periode", "Nuit");
-            eliminerRactifier(request, response, partiedao, proposed);
+            eliminerRactifier(request, response, partiedao, proposed, "Nuit");
         }
         if(action.equals("passeraujour")){
             partiedao.passerPeriode("Jour", partie);
             request.setAttribute("periode", "Jour");
-
-            eliminerRactifier(request, response, partiedao, proposed);
+            eliminerRactifier(request, response, partiedao, proposed, "Jour");
 
             /** vider la table de exercer pouvoir **/
             ExercerPouvoirDao exercerPv = new ExercerPouvoirDao(ds);
@@ -83,7 +84,6 @@ public class GestionPartie extends HttpServlet {
            
         }
         request.setAttribute("maitrejeu", "1");
-        JoueurDao joueurdao = new JoueurDao(ds);
         Boolean finpartie =  joueurdao.finPartie();
         if(finpartie){
             String gagant = joueurdao.gagnant();
@@ -94,28 +94,31 @@ public class GestionPartie extends HttpServlet {
             this.getServletContext().getRequestDispatcher( VUE_FIN ).forward( request, response );
         }
         else{
-            this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
+            response.sendRedirect("/projetAcol/Jeu");
+            //this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
         }
     }
 
     private void eliminerRactifier(HttpServletRequest request, 
                          HttpServletResponse response, PartieDao partiedao,
-                         List<Proposed> proposed) 
+                         List<Proposed> proposed, String periode) 
             throws ServletException, IOException {
-            int max = 0;
+            
+            int max = partiedao.nbJoueurs(periode.equals("Jour")?true:false)/2;
+            System.err.println(max);
             String eliminer = null;
             for (Proposed joueur:proposed){
+                System.err.println(joueur.getNbVote());
                 if (joueur.getNbVote() > max){
                     max = joueur.getNbVote();
                     eliminer = joueur.getPseudonyme();
                 }
             }
+            partiedao.viderProposed();
             if (eliminer != null){
-                partiedao.changeStatut(eliminer);
-                partiedao.viderProposed();
                 
+                partiedao.changeStatut(eliminer);
             }
-            
     }
     /**
      * Returns a short description of the servlet.

@@ -101,7 +101,7 @@ public class Jeu extends HttpServlet {
                 request.setAttribute(ATT_MESSAGES, messages);
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
                 String m = (String) session.getAttribute(ATT_MAITRE);
-                if(maitre != null || (m!=null && m.equals("1"))){
+                if((m!=null && m.equals("1"))){
                     request.setAttribute(ATT_MAITRE, "1");
                     session.setAttribute(ATT_MAITRE, "1");
                     Boolean finpartie =  joueurdao.finPartie();
@@ -152,6 +152,13 @@ public class Jeu extends HttpServlet {
                 String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
                 String pseudo = request.getParameter("id");
                 addVote(request, response, partiedao, proposed, pseudo, voter);
+                action = null;
+                response.sendRedirect("/projetAcol/Jeu");
+            }
+            else if (action.equals("removeVote")){
+                String voter = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
+                String pseudo = request.getParameter("id");
+                partiedao.retirerVote(pseudo, voter);
                 action = null;
                 response.sendRedirect("/projetAcol/Jeu");
             }

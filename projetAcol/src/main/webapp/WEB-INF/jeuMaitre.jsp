@@ -19,9 +19,13 @@
 
         <div class="information">
             <p>Vous êtes le maitre de jeu</p>
+            <p>Période : "${periode}"</p>
         </div>
 
         <br><br>
+        
+        <div class="same">
+        <div class="item">
         <c:choose>
             <c:when test="${maitrejeu == '1'&& periode eq'Jour'}">
                 <form method="post" action = "GestionPartie">
@@ -44,6 +48,45 @@
                 </form>
             </c:when>
         </c:choose>
+        <br>
+        <br>
+        <br>
+        <c:if test="${proposed!=null && proposed.size()!=0}">
+            <table>
+            <tr>
+                <th> Villageois Proposés </th>
+                <th> Nombre de votes </th>
+            </tr>
+            <c:forEach items="${proposed}" var="proposed">
+            <tr>
+                <td> ${proposed.pseudonyme} </td>
+                <td> ${proposed.getNbVote()} </td>
+            </tr>
+            </c:forEach>
+        </table>
+        </c:if>
+        <c:if test="${proposed==null || proposed.size()==0}">
+            <h3> Aucun joueur n'est proposé pour le moment.</h3>
+        </c:if>
+        </div>
+        <div class="item">
+        <div class="ListJoueurs ">
+        <u><p>Liste des joueurs </p></u>
+        <c:forEach items="${joueurs}" var="joueur">
+        <c:choose>
+        <c:when test="${joueur.elimine}">
+        <del>
+            <p>${joueur.pseudonyme} (eliminer) </p>
+        </del>
+        </c:when>
+        <c:otherwise>
+            <p>${joueur.pseudonyme}</p>
+        </c:otherwise>
+        </c:choose>
+        </c:forEach>
+        </div>
+        </div>
+            </div>
         <div class="container">
           <div class="chat-container">
                 <c:forEach items="${messages}" var="message">
