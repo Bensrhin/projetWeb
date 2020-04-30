@@ -7,7 +7,7 @@ package dao;
 
 /**
  *
- * @author nadir
+ * @author Equipe 9
  */
 import beans.Joueur;
 import java.sql.*;
@@ -29,6 +29,9 @@ public class PartieDao extends AbstractDataBaseDAO {
     }
  /**
  * crée une table partie qui contient les paramétres choisis par le maitre de jeu
+     * @param maitre
+     * @param probabilite
+     * @param loupgarou
  */
     public void creerPartie(String maitre, double probabilite, double loupgarou) {
         try (
@@ -85,8 +88,8 @@ public class PartieDao extends AbstractDataBaseDAO {
         }
     }
  /**
- * retirer le vote. 
- * @param pseudo pseudo joueur qui propose un villageois.
+ * retirer le vote de celui qui a proposé.
+ * @param pseudo pseudo joueur qui a proposé .
  * @param voter  pseudo joueur proposé.
  */
     public void retirerVote(String pseudo, String voter){
@@ -101,6 +104,11 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+
+    /**
+     *  Renvoie la liste des joueurs proposés aucours de la partie.
+     * @return liste des proposés
+     */
     public List<Proposed> getProposed(){
         List<Proposed> result = new ArrayList<>();
         try (
@@ -133,6 +141,12 @@ public class PartieDao extends AbstractDataBaseDAO {
 	}
 	return result;
     }
+
+    /**
+     *  Elle insert dans partie le mâtre qui gère et la période du jeu.
+     * @param partie
+     * @return un boolean indiquant l'existance d'une partie ou pas.
+     */
     public boolean partieEnCours(Partie partie){
         try (
             Connection conn = getConn();  
@@ -151,6 +165,10 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Elle vide la table des proposés aucours d'une période.
+     */
     public void viderProposed(){
         try (
             Connection conn = getConn();  
@@ -161,6 +179,13 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+
+    /**
+     *  Elimanation du joueur ratifié
+     *  Suppression de la table REMOVED.
+     *  AJout de l'éliminé dans la page removed
+     * @param removed
+     */
     public void changeStatut(String removed){
         try (
             /* changer le statut de l'utilisateur*/
@@ -181,6 +206,11 @@ public class PartieDao extends AbstractDataBaseDAO {
         }
 
     }
+
+    /**
+     *  Récuperer les informations du nouveau joueur éliminé
+     * @return joueur éliminé
+     */
     public Joueur nouveauMort(){
         try (
             Connection conn = getConn();  
@@ -220,6 +250,15 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD "  +  ex.getMessage(), ex);
         }
     }
+
+    /**
+     *  Passage du jour à nuit et vise versa 
+     *  Archiver les messages de chaque période après ce passage
+     *  Suppression de la table de messages
+     *  Changer la période de la partie.
+     * @param periode
+     * @param partie
+     */
     public void passerPeriode(String periode, Partie partie){
         /*modifier la periode*/
         try (
@@ -269,6 +308,9 @@ public class PartieDao extends AbstractDataBaseDAO {
         }
     }
 
+    /**
+     * Suppression de la table partie
+     */
     public void deletePartie() {
         /*supprimer la partie et tous les elements de la partie*/
         
