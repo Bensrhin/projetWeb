@@ -8,14 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
-import beans.Utilisateur;
-import java.math.BigInteger;  
-import java.nio.charset.StandardCharsets; 
-import java.security.MessageDigest;  
-import java.security.NoSuchAlgorithmException;
 import beans.Joueur;
-import beans.Pouvoir;
-import beans.Role;
 import beans.ExercerPouvoir;
 
 /**
@@ -27,10 +20,13 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
     public ExercerPouvoirDao(DataSource ds){
         super(ds);
     }
-    
+ /**
+ * listé les humains non eliminé. 
+ * @return liste des humains non eliminé
+ */
     public List<Joueur> getHumains(){
         
-        List<Joueur> humains = new ArrayList<Joueur>();
+        List<Joueur> humains = new ArrayList<>();
         try (
             
             Connection conn = getConn();
@@ -49,9 +45,13 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         
         return humains;
     }
-    
+ /**
+ * cherché le joueur qui a comme pseudonyme name.
+ * @param name
+ * @return joueur avec le meme name
+ */    
     public List<Joueur> getJoeurs(String name){
-        List<Joueur> joueurs = new ArrayList<Joueur>();
+        List<Joueur> joueurs = new ArrayList<>();
         try (
             
             Connection conn = getConn();
@@ -70,7 +70,10 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         
         return joueurs;
     }
-    
+ /**
+ * exercer le pouvoir d'un loup garoup sur un humain.
+ * @param exercerPv
+ */
     public void appliqueVoyance(ExercerPouvoir exercerPv){
         
         String par = exercerPv.getExercerPar();
@@ -89,7 +92,10 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         }
     }
     
-    
+ /**
+ * exercer le pouvoir d'un loup garoup sur un humain.
+ * @param exercerPv
+ */
     public void appliqueContamination(ExercerPouvoir exercerPv){
         
         String loupGarou = exercerPv.getExercerPar();
@@ -118,7 +124,9 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
-    
+ /**
+ * vide la table exercerPouvoir.
+ */
     public void videTable(){
         
         try (
@@ -132,7 +140,9 @@ public class ExercerPouvoirDao extends AbstractDataBaseDAO{
         }
         
     }
-
+ /**
+ * vide la table exercerPouvoir.
+ */
     public void deletePouvoirs() {
             try (
             Connection conn = getConn();  
