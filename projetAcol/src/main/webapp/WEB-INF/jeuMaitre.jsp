@@ -22,7 +22,7 @@
             <p class="${empty form.erreurs ? 'succes' : 'erreur'}">${form.resultat}</p>
         </form>
         <div class="information">
-            <p>Vous êtes le maitre de jeu</p>
+            <p>Vous êtes le maitre du jeu</p>
             <p>Période : "${periode}"</p>
         </div>
 
@@ -88,7 +88,7 @@
         <c:choose>
         <c:when test="${joueur.elimine}">
         <del>
-            <p>${joueur.pseudonyme} (eliminer) </p>
+            <p>${joueur.pseudonyme} (éliminé) </p>
         </del>
         </c:when>
         <c:otherwise>

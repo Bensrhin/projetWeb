@@ -30,7 +30,7 @@
                <a href="configurationpartie" class="button">Nouvelle Partie</a>
             </c:when>
             <c:when test="${participe == '0' && partieEnCours == '1' && maitrejeu == '0'}">
-            <h3>Une partie crée par <mark>${partieC.maitre}</mark> est actuellement en cours ...</h3>
+            <h3>Une partie créée par <mark>${partieC.maitre}</mark> est actuellement en cours ...</h3>
             <h3> Il reste encore <mark>${nombre}</mark> villageois vivants.</h3>
             <h3>Veuillez attendre la fin de cette partie.</h3>
                    <br><br>
@@ -41,7 +41,7 @@
             </c:when>
             <c:when test="${maitrejeu == '1' && partieEnCours == '1'}">
               <br></br>
-              <a href="Jeu?maitrejeu=1" class="button">Gerer la partie en cours </a>
+              <a href="Jeu?maitrejeu=1" class="button">Gérer la partie en cours </a>
             </c:when> 
           </c:choose>
                

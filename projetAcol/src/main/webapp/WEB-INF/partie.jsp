@@ -20,7 +20,7 @@
                 <legend>Configuration de la partie</legend>
                 <p>Commencez la configuration de la partie</p>
                 <br/>
-                <p> Selectionner les utilisateurs à jouer dans la partie ,au minimum 5 joueurs</p>
+                <p> Selectionnez les utilisateurs qui vont jouer dans la partie ,au minimum 5 joueurs</p>
                 <br/>
                 <table>
                 <tr>

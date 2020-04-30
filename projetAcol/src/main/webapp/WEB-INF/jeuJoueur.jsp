@@ -154,7 +154,7 @@
         <c:choose>
         <c:when test="${joueur.elimine}">
         <del>
-            <p>${joueur.pseudonyme} (eliminer) </p>
+            <p>${joueur.pseudonyme} (éliminé) </p>
         </del>
         </c:when>
         <c:otherwise>
@@ -217,14 +217,14 @@
 <c:if test="${joueur.pouvoirSt eq 'voyance' && periode eq 'Nuit' &&  not joueur.elimine}">
     <div class="voyance">
         <p>
-            Chaque nuit vous avez le droit de connaitre le role et le pouvoir d'un joueur
+            Chaque nuit vous avez le droit de connaitre le rôle et le pouvoir d'un joueur
         </p>
         <form method="post" action="Jeu">
              <c:choose>
             <c:when test="${not exercerPouvoir}">
-                <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
+                <p> Vous n'avez pas encore éxercer votre pouvoir cette nuit</p>
                 <p>
-                <label for="voyance">Veuillez choisir le joueur que vous voulez savoir ses informations:</label>
+                <label for="voyance">Veuillez choisir le joueur dont vous voulez savoir les informations:</label>
                 <select name="voyance" id="voyance">
                      <c:forEach items="${listJoueur}" var="listJoueur">
                          <option value="${listJoueur.pseudonyme}">${listJoueur.pseudonyme}</option>
@@ -232,11 +232,11 @@
 
                 </select>
             </p>
-            <input type="submit" name="bouton" value="regerder les informations de ce joueur">
+            <input type="submit" name="bouton" value="regarder les informations de ce joueur">
             </c:when>
             <c:when test="${exercerPouvoir}">
                 <p> Vous avez déja exercer votre pouvoir sur ${voyanceAp.pseudonyme}, 
-                son role est ${voyanceAp.roleSt} , son pouvoir est : ${voyanceAp.pouvoirSt} </p>
+                son rôle est ${voyanceAp.roleSt} , son pouvoir est : ${voyanceAp.pouvoirSt} </p>
 
             </c:when>
         </c:choose>
@@ -256,9 +256,9 @@
         <form method="post" action="Jeu">
              <c:choose>
             <c:when test="${not exercerPouvoir}">
-                <p> Vous n'avez pas encore exercer votre pouvoir cette nuit</p>
+                <p> Vous n'avez pas encore éxercé votre pouvoir cette nuit</p>
                 <p>
-                <label for="contamine">Veuillez choisir le joueur à transformer en loup Garou:</label>
+                <label for="contamine">Veuillez choisir le joueur que vous voulez transformer en loup Garou:</label>
                 <select name="contamine" id="contamine">
                      <c:forEach items="${humain}" var="humain">
                          <option value="${humain.pseudonyme}">${humain.pseudonyme}</option>
@@ -266,11 +266,11 @@
 
                 </select>
             </p>
-            <input type="submit" name="bouton" value="Contaminé cet humain">
+            <input type="submit" name="bouton" value="Contaminer cet humain">
             </c:when>
             
             <c:when test="${exercerPouvoir}">
-                <p> Vous avez déja exercer votre pouvoir sur ${exercerSur} </p>
+                <p> Vous avez déja éxercé votre pouvoir sur ${exercerSur} </p>
 
             </c:when>
         </c:choose>
