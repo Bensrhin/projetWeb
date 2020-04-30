@@ -8,11 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
-import beans.Utilisateur;
-import java.math.BigInteger;  
-import java.nio.charset.StandardCharsets; 
-import java.security.MessageDigest;  
-import java.security.NoSuchAlgorithmException;
 import beans.Joueur;
 import beans.Pouvoir;
 import beans.Role;
@@ -26,7 +21,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
     public JoueurDao(DataSource ds){
         super(ds);
     }
-    
+ /**
+ * ajouter joueur dans la base de donnée.
+ * @param joueur
+ */
     public void addJoueur(Joueur joueur){
         try (
             Connection conn = getConn();  
@@ -51,6 +49,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+ /**
+ * ajouter les joueurs dans la table Joueur.
+ * @param joueurs
+ */
     public void addJoueurs(List<Joueur> joueurs){
         for (Joueur j: joueurs){
             this.addJoueur(j);
@@ -58,14 +60,17 @@ public class JoueurDao extends AbstractDataBaseDAO{
     }
     
     
-    
+ /**
+ * liste les joueurs vivants
+ * @param joueur
+ * @return 
+ */
     public List<Joueur> getListeJoueursVivants(Joueur joueur){
         List<Joueur> result = new ArrayList<>();
         try (
             
 	     Connection conn = getConn();
              PreparedStatement st = conn.prepareStatement
-             /** selon la période **/
                 ("SELECT * FROM JOUEUR WHERE elimine=0 and pseudonyme not in (select pseudonyme from PROPOSED)");
 	     ) {
 
@@ -79,7 +84,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
 	}
 	return result;
     }
-    
+ /**
+ * liste tous les joueurs ( vivant et eliminé)
+ * @return liste des joueurs
+ */
     public List<Joueur> getListeJoueurs(){
         List<Joueur> result = new ArrayList<>();
         try (
@@ -131,7 +139,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
     
     
     
-    
+ /**
+ * donne les informations du joueur ( son role, pouvoir es si il est elimine ou non)
+ * @param joueur
+ */  
     
     public void getInformations(Joueur joueur){
         try (
@@ -168,6 +179,11 @@ public class JoueurDao extends AbstractDataBaseDAO{
         }
     }
     
+  /**
+ * verifie si un joueur exerce bien un pouvoir (si il exerce un pouvoir elle renvoie le joueur sinon elle renvoie null)
+ * @param exercerPar
+ * @return joueur
+ */
     public Joueur checkExercerPv(Joueur exercerPar){
         try (
             Connection conn = getConn();
@@ -185,7 +201,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
-
+ /**
+ * verifie si la partie est finie (il reste que des humains ou que des loups garous)
+ * @return Boolean ( true si la partie est finie et False sinon)
+ */
     public Boolean finPartie() {
         try (
 	     Connection conn = getConn();
@@ -207,7 +226,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	}
     }
-
+ /**
+ * verifie que la partie est finie te return l'equipe gagnante (humains ou loup garoup)
+ * @return return l'equipe gagnante (humains ou loup garoup)
+ */
   public String gagnant(){
         assert(this.finPartie());
         try (
@@ -223,7 +245,9 @@ public class JoueurDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD " + e.getMessage(), e);
 	} 
 }
-
+ /**
+ * vide la table des joueurs
+ */
     public void deleteJoueurs() {
             /* supprimer Joueurs*/
     try (

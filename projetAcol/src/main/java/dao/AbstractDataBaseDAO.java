@@ -15,7 +15,11 @@ public abstract class AbstractDataBaseDAO {
     protected AbstractDataBaseDAO(DataSource ds) {
         this.dataSource = ds;
     }
-
+/**
+ * elle établit la connexion avec la base de donnée.
+ * @return connection
+ * @throws java.sql.SQLException
+ */
     protected Connection getConn() throws SQLException {
         return dataSource.getConnection();
     }

@@ -7,7 +7,6 @@ package dao;
 
 import beans.Message;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,13 +15,19 @@ import java.util.List;
 import javax.sql.DataSource;
 
 /**
- *
+ * 
  * @author benjelloun
  */
 public class MessageDao extends AbstractDataBaseDAO{
         public MessageDao(DataSource ds){
         super(ds);
     }
+        
+ /**
+ * ajoute le message dans la base de donnée
+ * @param m le message à ajouter dans la base de donnée.
+ * @param periode la periode peut etre soit le jour soit la nuit soit l'archive.
+ */
     public void addMessage(Message m, String periode){
         try (
             Connection conn = getConn();  
@@ -36,6 +41,12 @@ public class MessageDao extends AbstractDataBaseDAO{
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+    
+ /**
+ * ajoute le message dans la base de donnée
+ * @param periode la periode peut etre soit le jour soit la nuit soit l'archive.
+ * @return liste des messages écrits dans la periode.
+ */
     public List<Message> getListeMessages(String periode){
         List<Message> result = new ArrayList<>();
         if(periode.equals("archive")){
@@ -71,6 +82,9 @@ public class MessageDao extends AbstractDataBaseDAO{
     return result;
     }
 
+ /**
+ * supprime tous les messages enregistrés dans les tables MessageJour, MessageNuit et Archive.
+ */
     public void deleteMessages() {
             /* supprimer Messages*/
     try (

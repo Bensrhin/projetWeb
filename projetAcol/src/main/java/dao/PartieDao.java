@@ -14,28 +14,22 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
-import beans.Utilisateur;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import beans.Partie;
 import beans.Pouvoir;
 import beans.Proposed;
 import beans.Role;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PartieDao extends AbstractDataBaseDAO {
 
     public PartieDao(DataSource ds) { 
         super(ds);
     }
-
+ /**
+ * crée une table partie qui contient les paramétres choisis par le maitre de jeu
+ */
     public void creerPartie(String maitre, double probabilite, double loupgarou) {
         try (
             Connection conn = getConn();  
@@ -45,13 +39,17 @@ public class PartieDao extends AbstractDataBaseDAO {
             st.setDouble(3, loupgarou);
             st.setString(4, "Jour");
             st.executeUpdate();
-            /** retourne la valeur de IdPartie **/
             
         } catch (SQLException e) {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
         
     }
+ /**
+ * compte le nombre des loups garous non eliminés si onlyLoup sinon elle compte tous les joueurs non eliminés.
+ * @param onlyLoup
+ * @return nombre de joueurs 
+ */
     public int nbJoueurs(boolean onlyLoup){
         String statement = "select count(*) from joueur where elimine = 0 and role=" + "\'loupGarou\'";
         if (!onlyLoup){
@@ -69,6 +67,11 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD " + e.getMessage(), e);
         }
     }
+ /**
+ * proposer un joueur pour le tuer. 
+ * @param pseudo pseudo joueur qui propose un villageois.
+ * @param voter  pseudo joueur proposé.
+ */
     public void proposerVillageois(String pseudo, String voter){
         try (
             Connection conn = getConn();  
@@ -81,6 +84,11 @@ public class PartieDao extends AbstractDataBaseDAO {
             throw new DAOException("Erreur BD "  +  e.getMessage(), e);
         }
     }
+ /**
+ * retirer le vote. 
+ * @param pseudo pseudo joueur qui propose un villageois.
+ * @param voter  pseudo joueur proposé.
+ */
     public void retirerVote(String pseudo, String voter){
         try (
             Connection conn = getConn();  
