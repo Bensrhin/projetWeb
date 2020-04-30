@@ -188,7 +188,6 @@ public class Jeu extends HttpServlet {
         if(action.equals("SendMess")){
            String pseudoName = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom();
            String contenu = request.getParameter("contenu");
-           System.err.println("contenu = "+ contenu);
            if(!contenu.equals("")){
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm:ss");
