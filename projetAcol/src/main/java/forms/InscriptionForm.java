@@ -7,7 +7,7 @@ package forms;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 
 import java.util.HashMap;

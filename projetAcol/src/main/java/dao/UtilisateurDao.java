@@ -121,9 +121,9 @@ public class UtilisateurDao extends AbstractDataBaseDAO{
     }
     
     /**
-     * vérification du bon format du password
+     * Encode le mot de passe afin d'éviter l'identification des  vrais mots de passes
      * @param password
-     * @return
+     * @return nouveau mot de passe codé
      */
     public String hashPassword(String password){
         String generatedPass = null;

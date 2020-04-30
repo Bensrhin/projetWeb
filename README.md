@@ -14,12 +14,11 @@ L'utilisation de l'application nécessite l'installation de Netbeans et maven. N
 
 ## install_bd.sql
 
-Ce fichier contient tous les requetes necessaire pour installer la base de données dont l'application à besoin , ainsi que un certains requetes
-qui permet d'ajouter des utilisateurs dans l'application.
+Ce fichier contient tous les requêtes nécessaires pour installer la base de données dont l'application a besoin, ainsi que certaines requêtes qui permettent d'ajouter des utilisateurs dans l'application.
 
 ## uninstall.sql
 
-Permet de supprimer tous les tables installé par install_bd.sql
+Permet de supprimer toutes les tables installées par install_bd.sql
 
 ## projetAcol
 
@@ -28,7 +27,7 @@ Ce dossier contient le projet maven sans les fichiers compilés.
 ## Les identifants de connexion
 
   ### pour les utilisateurs de l'application :
-    Pour des raisons de simplification et vu que le mot de passe est haché par l'application, les utilisateurs installé dans install_bd.sql ont le même mot de passe qui est  : test
+    Pour des raisons de simplification et vu que le mot de passe est haché par l'application, les utilisateurs installés dans install_bd.sql ont le même mot de passe qui est  : test
 
 
   ### Pour le site adminer.ensimag.fr/:
@@ -37,5 +36,5 @@ Ce dossier contient le projet maven sans les fichiers compilés.
 
 ## Lancer l'Application
 
-Pour lancer l'application il suffit d'ouvrir le projet maven dans Netbeans, et configurer la connexion à la base de données dans services Database en utilisant les identifiants précedants.
-Ou bien dans n'importe quelle base de données , mais il faut executer le ficher install_bd.sql avant de lancer l'application. Ensuite il suffit de cliquer sur build project pour compiler les fichers ensuite sur run project pour lancer l'application
+Pour lancer l'application il suffit d'ouvrir le projet maven dans Netbeans, et configurer la connexion à la base de données dans services Database en utilisant les identifiants précédents.
+Ou bien dans n'importe quelle base de données , mais il faut exécuter le ficher install_bd.sql avant de lancer l'application. Ensuite il suffit de cliquer sur build project pour compiler les fichiers ensuite sur run project pour lancer l'application.

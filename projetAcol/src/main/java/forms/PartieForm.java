@@ -7,14 +7,12 @@ package forms;
 
 /**
  *
- * @author nadir
+ * @author Equipe 9
  */
 import beans.Partie;
 import java.util.HashMap;
 import java.util.Map;
-import dao.UtilisateurDao;
 import javax.servlet.http.HttpServletRequest;
-import beans.Utilisateur;
 import dao.PartieDao;
 import dao.JoueurDao;
 import beans.Joueur;

@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 
 /**
  * 
- * @author benjelloun
+ * @author Equipe 9
  */
 public class MessageDao extends AbstractDataBaseDAO{
         public MessageDao(DataSource ds){
