@@ -6,7 +6,6 @@
 package servlets;
 
 
-import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,23 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.*;
-import java.util.List;
 import javax.annotation.Resource;
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
 import beans.Utilisateur;
 import dao.UtilisateurDao;
-import forms.ConnexionForm;
 import dao.DAOException;
 import dao.PartieDao;
 import beans.Partie;
-import static servlets.Connexion.ATT_SESSION_USER;
 
 //@WebServlet(name = "restriction", urlPatterns = {"/restriction"})
 public class Restriction extends HttpServlet {

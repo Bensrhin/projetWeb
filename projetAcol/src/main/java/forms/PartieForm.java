@@ -7,7 +7,7 @@ package forms;
 
 /**
  *
- * @author nadir
+ * @author Equipe 9
  */
 import beans.Partie;
 import java.util.HashMap;

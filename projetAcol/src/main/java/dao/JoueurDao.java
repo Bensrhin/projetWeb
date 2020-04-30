@@ -14,7 +14,7 @@ import beans.Role;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 public class JoueurDao extends AbstractDataBaseDAO{
     

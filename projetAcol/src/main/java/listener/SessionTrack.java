@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 public class SessionTrack implements HttpSessionListener  
   {  

@@ -7,7 +7,7 @@ package dao;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 public class DAOConfigurationException extends RuntimeException {
     /*

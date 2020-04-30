@@ -13,7 +13,7 @@ import beans.ExercerPouvoir;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 public class ExercerPouvoirDao extends AbstractDataBaseDAO{
     

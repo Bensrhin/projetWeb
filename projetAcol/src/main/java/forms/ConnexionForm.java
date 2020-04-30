@@ -12,7 +12,7 @@ import beans.Utilisateur;
 
 /**
  *
- * @author amalou
+ * @author Equipe 9
  */
 public class ConnexionForm {
     
