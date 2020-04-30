@@ -27,13 +27,14 @@
         </div>
 
         <br><br>
-        <div class="notification">
         <c:if test="${mort!=null}">
+        <div class="notification">
+        
             <div class="new-death">
                 <h3>Urgent !!! <mark>"${mort.pseudonyme}"</mark> est trouvé(e) mort(e).</h3>
             </div>
-        </c:if>
         </div>
+        </c:if>
         <br><br>
         
         <div class="same">
