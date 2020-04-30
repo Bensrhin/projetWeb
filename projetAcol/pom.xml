@@ -13,7 +13,7 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
@@ -27,7 +27,7 @@
             <version>1.2</version>
             <type>jar</type>
      </dependency>
-     
+
     <dependency>
       <groupId>org.jasypt</groupId>
       <artifactId>jasypt</artifactId>
@@ -38,6 +38,15 @@
 
     <build>
         <plugins>
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>tomcat-maven-plugin</artifactId>
+              <version>1.1</version>
+              <configuration>
+                  <server>MyTomcat</server>
+                  <url>http://localhost:8080/manager/text</url>
+              </configuration>
+         </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -1,4 +1,4 @@
-# Application WEB : Leu Loups-Garous vs Humains
+# Application WEB : Les Loups-Garous vs Humains
   Ce projet contient une application web de fameux jeu : loups-garous vs Humains.
 
 ## Développeurs
@@ -21,6 +21,10 @@ qui permet d'ajouter des utilisateurs dans l'application.
 
 Permet de supprimer tous les tables installé par install_bd.sql
 
+## projetAcol
+
+Ce dossier contient le projet maven sans les fichiers compilés.
+
 ## Les identifants de connexion
 
   ### pour les utilisateurs de l'application :
@@ -34,4 +38,4 @@ Permet de supprimer tous les tables installé par install_bd.sql
 ## Lancer l'Application
 
 Pour lancer l'application il suffit d'ouvrir le projet maven dans Netbeans, et configurer la connexion à la base de données dans services Database en utilisant les identifiants précedants.
-Ou bien dans n'importe quelle base de données , mais il faut executer le ficher install_bd.sql avant de lancer l'application. Ensuite il suffit de cliquer sur build project après run project.
+Ou bien dans n'importe quelle base de données , mais il faut executer le ficher install_bd.sql avant de lancer l'application. Ensuite il suffit de cliquer sur build project pour compiler les fichers ensuite sur run project pour lancer l'application

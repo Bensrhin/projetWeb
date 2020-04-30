@@ -6,8 +6,8 @@
 package beans;
 
 /**
- *
- * @author amalou
+ *  Classe qui contient les différents pouvoirs implémentés dans l'application.
+ * @author Equipe 9
  */
 public enum Pouvoir {
     aucun,

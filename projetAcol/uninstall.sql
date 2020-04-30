@@ -13,9 +13,13 @@ drop SEQUENCE id_partie;
 drop SEQUENCE id_user;
 drop SEQUENCE id_MessageJour;
 drop SEQUENCE id_MessageNuit;
-drop SEQUENCE id_Archive
-drop table Joeur;
+drop SEQUENCE id_Archive;
 drop table MessageNuit;
 drop table MessageJour;
+drop table Proposed;
+drop table Removed;
 drop table Archive;
+drop table ExercerPouvoir;
+drop table Joueur;
 drop table Partie;
+drop table Utilisateur;

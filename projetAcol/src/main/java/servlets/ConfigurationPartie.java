@@ -32,8 +32,8 @@ import java.util.ArrayList;
 
 
 /**
- *
- * @author nadir
+ * classe sui controle la création d'une partie par un utilisateur.
+ * @author Equipe 9
  */
 @WebServlet(name = "ConfigurationPartie", urlPatterns = {"/configurationpartie"})
 public class ConfigurationPartie extends HttpServlet {
@@ -55,6 +55,7 @@ public class ConfigurationPartie extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/controleurErreur.jsp").forward(request, response);
     }
 
+    /** Page d'erreur à afficher en cas d'une erreur de base de données **/
     private void erreurBD(HttpServletRequest request,
             HttpServletResponse response, DAOException e)
             throws ServletException, IOException {
@@ -63,6 +64,9 @@ public class ConfigurationPartie extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/bdErreur.jsp").forward(request, response);
     }
 
+    /**
+     * 
+     */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         /* Affichage de la page de configuration */
         /** Affichage des utilisateur en lignes dans la pages **/

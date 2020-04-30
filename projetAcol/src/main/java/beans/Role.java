@@ -6,8 +6,8 @@
 package beans;
 
 /**
- *
- * @author amalou
+ * Classe qui contient les différents roles des joueurs.
+ * @author Equipe 9
  */
 public enum Role {
     humain,
