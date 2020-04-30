@@ -61,11 +61,10 @@ public class JoueurDao extends AbstractDataBaseDAO{
     
     
  /**
- * liste les joueurs vivants
- * @param joueur
- * @return 
+ * 
+ * @return liste les joueurs vivants
  */
-    public List<Joueur> getListeJoueursVivants(Joueur joueur){
+    public List<Joueur> getListeJoueursVivants(){
         List<Joueur> result = new ArrayList<>();
         try (
             

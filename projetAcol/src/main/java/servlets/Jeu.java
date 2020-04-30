@@ -109,7 +109,7 @@ public class Jeu extends HttpServlet {
                     Joueur joueur = new Joueur(pseudonyme);
                     JoueurDao joueurdao = new JoueurDao(ds);
                     joueurdao.getInformations(joueur);
-                    List<Joueur> villageois = joueurdao.getListeJoueursVivants(joueur);
+                    List<Joueur> villageois = joueurdao.getListeJoueursVivants();
                     /** Chercher les informations sur le joueur **/
                     request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                     request.setAttribute(ATT_MESSAGES, messages);
