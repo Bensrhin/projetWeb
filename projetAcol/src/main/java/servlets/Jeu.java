@@ -89,7 +89,8 @@ public class Jeu extends HttpServlet {
                     //response.sendRedirect( request.getContextPath() + ACCES_PUBLIC );
                      this.getServletContext().getRequestDispatcher( ACCES_PUBLIC ).forward( request, response );
             } else {
-                List<Message> messages = messageDao.getListeMessages(partie.getPeriode());
+               
+                List<Message> messages = messageDao.getListeMessages(partie.getPeriode()==null?"archive":partie.getPeriode());
                 String pseudonyme = ((Utilisateur)session.getAttribute(ATT_SESSION_USER)).getNom(); 
                 Joueur joueur = new Joueur(pseudonyme);
                 JoueurDao joueurdao = new JoueurDao(ds);
@@ -99,8 +100,10 @@ public class Jeu extends HttpServlet {
                 request.setAttribute("joueurs", joueurdao.getListeJoueurs());
                 request.setAttribute(ATT_MESSAGES, messages);
                 request.setAttribute(ATT_PERIODE, partie.getPeriode());
-                if(maitre != null){
+                String m = (String) session.getAttribute(ATT_MAITRE);
+                if(maitre != null || (m!=null && m.equals("1"))){
                     request.setAttribute(ATT_MAITRE, "1");
+                    session.setAttribute(ATT_MAITRE, "1");
                     Boolean finpartie =  joueurdao.finPartie();
                     if(finpartie){
                         String gagant = joueurdao.gagnant();
@@ -114,6 +117,7 @@ public class Jeu extends HttpServlet {
                     }
                 }
                 else{
+                    session.setAttribute(ATT_MAITRE, "0");
                     request.setAttribute("mort", mort);
                     request.setAttribute("villageois", villageois);
                     request.setAttribute(ATT_JOUEUR, joueur);
@@ -204,7 +208,8 @@ public class Jeu extends HttpServlet {
             request.setAttribute(ATT_PERIODE, partie.getPeriode());
             request.setAttribute(ATT_JOUEUR, joueur);
             exercerPouvoirContamination(request,response);
-            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
+            response.sendRedirect("/projetAcol/Jeu");
+            //this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
         }
         if (action.equals("pouvoirVoyance")){
             
@@ -220,7 +225,8 @@ public class Jeu extends HttpServlet {
             request.setAttribute(ATT_JOUEUR, joueur);
             
             exercerPouvoirVoyance(request,response);
-            this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
+            response.sendRedirect("/projetAcol/Jeu");
+            //this.getServletContext().getRequestDispatcher( VUE_JOUEUR).forward( request, response );
         }
         if (action.equals("proposer")){
             String nameProposed = request.getParameter("villageois");
